@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -56,7 +58,6 @@ public class SignInController implements Initializable {
         this.stage = primaryStage;
     }
     
-
     /**
      * Initialize the window
      * 
@@ -73,6 +74,14 @@ public class SignInController implements Initializable {
             stage.setTitle("Sign In");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
+            //Controls
+            loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
+            signUpHL.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    handleSignUpHyperLink();
+                }
+            });
             //ventana asincrona
             stage.show();
         }catch(Exception ex){
@@ -81,13 +90,30 @@ public class SignInController implements Initializable {
         
     }
     
-    private void handleButtonLogin(){
-        
+    //Pressing the login button
+    private void handleButtonLogin(ActionEvent actionEvent){
+        try{
+            LOG.info("Login Button Pressed");
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Login Button Error", ex);
+        }  
     }
+    //Pressing the window exit button
     private void handleCloseRequest(WindowEvent event){
-        Platform.exit();
+        try{
+            LOG.info("Closing...");
+            Platform.exit();
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Close request error", ex);
+        }  
     }
     
+    //Pressing the HyperLink
+    private void handleSignUpHyperLink(){
+        try{
+            LOG.info("Sign Up Hyper Link Pressed");
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "HyperLink Error", ex);
+        }  
+    }
 }
-
-

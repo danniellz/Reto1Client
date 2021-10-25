@@ -9,7 +9,7 @@ import signupsigninclient.controller.SignInController;
 /**
  * class responsible for starting the application
  * 
- * @author Aritz Arrieta, Mikel Matilla, Daniel Brizuela, Jonathan Viñan
+ * @author Daniel Brizuela
  */
 public class SignUpSignInClient extends Application{
     /**
