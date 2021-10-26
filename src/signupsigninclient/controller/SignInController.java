@@ -1,5 +1,6 @@
 package signupsigninclient.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -8,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +18,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -23,9 +27,10 @@ import javafx.stage.WindowEvent;
  * SignIn window controller class 
  * 
  * @author Daniel Brizuela
+ * @version 1.0
  */
 public class SignInController implements Initializable {
-    //Attributes
+    //Attributes, @FXML allows interaction with controls from the FXML file
     private Stage stage;
     @FXML
     private TextField userTxt;
@@ -34,13 +39,15 @@ public class SignInController implements Initializable {
     @FXML
     private Button loginBtn;
     @FXML
-    private Hyperlink signUpHL;
+    private Hyperlink signUpHl;
     @FXML
     private Label errorLbl;
     
+    //LOGGER
     private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
     
     /**
+     * Initialize method from implements Initializable
      * 
      * @param location
      * @param resources 
@@ -76,12 +83,7 @@ public class SignInController implements Initializable {
             stage.setOnCloseRequest(this::handleCloseRequest);
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
-            signUpHL.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-                    handleSignUpHyperLink();
-                }
-            });
+            signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
             //ventana asincrona
             stage.show();
         }catch(Exception ex){
@@ -91,15 +93,25 @@ public class SignInController implements Initializable {
     }
     
     //Pressing the login button
-    private void handleButtonLogin(ActionEvent actionEvent){
+    /**
+     * Calling this method the SignIn action will be executed to grant access to the app (LogOut window)
+     * 
+     * @param buttonPress Action event at pressing the login button
+     */
+    private void handleButtonLogin(ActionEvent buttonPress){
         try{
             LOG.info("Login Button Pressed");
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
         }  
     }
-    //Pressing the window exit button
-    private void handleCloseRequest(WindowEvent event){
+
+    /**
+     * Calling this method will close the app (EJ: Pressing the window exit button)
+     * 
+     * @param closeEvent A window event
+     */
+    private void handleCloseRequest(WindowEvent closeEvent){
         try{
             LOG.info("Closing...");
             Platform.exit();
@@ -108,12 +120,71 @@ public class SignInController implements Initializable {
         }  
     }
     
-    //Pressing the HyperLink
-    private void handleSignUpHyperLink(){
+    private void handleTextChanged(){
         try{
-            LOG.info("Sign Up Hyper Link Pressed");
+            LOG.info("Typing...");
         }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Typing error (handleTextChange)", ex);
+        }  
+    }
+    
+    /**
+     * Calling this method will open the SignUp window
+     * 
+     * @param HyperLinkPress Action event at pressing the HyperLink
+     */
+    private void handleSignUpHyperLink(ActionEvent HyperLinkPress){
+        try{
+            LOG.info("SignUp Hyper Link Pressed");
+            startSignUpWindow(stage);
+        }catch(IOException ex){
             LOG.log(Level.SEVERE, "HyperLink Error", ex);
         }  
+    }
+    
+    /**
+     * Open the SignUp window
+     * 
+     * @param primaryStage stage object (window)
+     * @throws IOException Throws an error if the SignUp window fails to open
+     */
+    private void startSignUpWindow(Stage primaryStage) throws IOException{
+        /*try{
+            LOG.info("Starting SignUp Window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignUp.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            SignUpController signUpController = ((SignUpController)loader.getController()); 
+            //Set the stage
+            SignUpController.setStage(primaryStage);
+            //initialize the window
+            SignUpController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
+        }*/
+    }
+    
+    /**
+     * Open the LogOut window
+     * 
+     * @param primaryStage stage object (window)
+     * @throws IOException Throws an error if the LogOut window fails to open
+     */
+    private void startLogOutWindow(Stage primaryStage) throws IOException{
+        /*try{
+            LOG.info("Starting LogOut Window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            LogOutController logOutController = ((LogOutController)loader.getController()); 
+            //Set the stage
+            LogOutController.setStage(primaryStage);
+            //initialize the window
+            LogOutController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
+        }*/
     }
 }

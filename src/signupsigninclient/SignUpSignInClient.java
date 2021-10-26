@@ -1,5 +1,8 @@
 package signupsigninclient;
 
+import com.sun.media.jfxmedia.logging.Logger;
+import java.io.IOException;
+import java.util.logging.Level;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +13,12 @@ import signupsigninclient.controller.SignInController;
  * class responsible for starting the application
  * 
  * @author Daniel Brizuela
+ * @version 1.0
  */
 public class SignUpSignInClient extends Application{
+    //LOGGER
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(SignInController.class.getName());
+    
     /**
      * This is the first window (SignIn)
      * 
@@ -20,15 +27,20 @@ public class SignUpSignInClient extends Application{
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Load the FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignIn.fxml"));
-        Parent root = (Parent)loader.load();
-        //Get controller
-        SignInController signinController = ((SignInController)loader.getController()); 
-        //Set the stage
-        signinController.setStage(primaryStage);
-        //initialize the window
-        signinController.initStage(root);
+        try{
+            LOG.info("Starting SignIn window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignIn.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            SignInController signinController = ((SignInController)loader.getController()); 
+            //Set the stage
+            signinController.setStage(primaryStage);
+            //initialize the window
+            signinController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting SignIn window", ex);
+        }
     }
     
     /**
