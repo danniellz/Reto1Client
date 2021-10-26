@@ -5,15 +5,22 @@
  */
 package signupsigninclient.controller;
 
-import java.awt.Button;
-import java.awt.Label;
-import java.awt.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
+import java.beans.EventHandler;
+import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -91,16 +98,75 @@ public class SignUpController {
     }
 
     public void initStage(Parent root) {
+        charlimit();
+        registerValidation();
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
-        stage.setOnShowing(this::handleWindowShowing);
+        //  stage.setOnShowing(this::handleWindowShowing);
+
         stage.show();
     }
 
-    private void handleWindowShowing(WindowEvent event) {
+    /* private void handleWindowShowing(WindowEvent event) {
 
-        
+    }*/
+    /**
+     * this method puts a limit in the textLabels (25 limit except email textLabel)
+     */
+    private void charlimit() {
+        userTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (userTxt.getText().length() > 25 ) {
+                    userTxt.deletePreviousChar();
+                    userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
+                } else {
+                    userTxt.setStyle("-fx-border-color: White;");
+                }
+            }
+
+        });
+        fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (fullNameTxt.getText().length() > 25) {
+                    fullNameTxt.deletePreviousChar();
+                    fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                }
+            }
+        });
+        emailTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (emailTxt.getText().length() > 50) {
+                    emailTxt.deletePreviousChar();
+                    emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                }
+            }
+        });
+
+    }
+
+    private void registerValidation() {
+        Pattern espChar = Pattern.compile("[$&+,:;=?@#|'<>.-^*()%!0-9]");
+         fullNameTxt.hoverProperty().addListener(new ChangeListener<Boolean>(){
+             @Override
+             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                 Matcher matcher = espChar.matcher(fullNameTxt.getText());
+                 Boolean est = matcher.matches();
+                 if(est){
+                     fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
+                     fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
+                 } else{
+                 fullNameErrorLbl.setText(" ");
+                  fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
+                 }
+             }
+         
+         
+         });
     }
 }
