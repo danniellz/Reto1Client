@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,8 +20,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -84,6 +84,7 @@ public class SignInController implements Initializable {
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
             signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
+            handleTextLimit();
             //ventana asincrona
             stage.show();
         }catch(Exception ex){
@@ -120,11 +121,30 @@ public class SignInController implements Initializable {
         }  
     }
     
-    private void handleTextChanged(){
+    //Calling this method sets the user and password field limit character (textProperty())
+    private void handleTextLimit(){
         try{
-            LOG.info("Typing...");
+            LOG.info("Setting User and Password field limit character...");
+            //User field setting (lambda -- ChangeListener)
+            userTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                //if a 26 character its typed, take first character to 25 and set it to the field
+                if(userTxt.getText().length() > 25){
+                    userTxt.setText(userTxt.getText().substring(0, 25));
+                }
+                //controlar espacios
+                if(userTxt.getText().matches(" "+userTxt.getText()) || userTxt.getText().matches(userTxt.getText()+" ") ){
+                    LOG.info("espacio");
+                }
+            });
+            //Password field setting (lambda -- ChangeListener)
+            passwordTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                //if a 26 character its typed, take first character to 25 and set it to the field
+                if(passwordTxt.getText().length() > 25){
+                    userTxt.setText(passwordTxt.getText().substring(0, 25));
+                }
+            });
         }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Typing error (handleTextChange)", ex);
+            LOG.log(Level.SEVERE, "Error Setting User and Password field(handleTextChange)", ex);
         }  
     }
     
