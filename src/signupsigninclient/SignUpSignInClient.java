@@ -1,8 +1,8 @@
 package signupsigninclient;
 
-import com.sun.media.jfxmedia.logging.Logger;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +17,7 @@ import signupsigninclient.controller.SignInController;
  */
 public class SignUpSignInClient extends Application{
     //LOGGER
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(SignInController.class.getName());
+    private static final Logger LOG = Logger.getLogger(SignUpSignInClient.class.getName());
     
     /**
      * This is the first window (SignIn)

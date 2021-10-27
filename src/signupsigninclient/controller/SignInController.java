@@ -6,10 +6,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,6 +52,9 @@ public class SignInController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        errorLbl.setVisible(false);
+        errorLbl.setText("Incorrect User or Password");
+        errorLbl.setStyle("-fx-text-fill: red");
     }
     
     /**
@@ -102,6 +103,14 @@ public class SignInController implements Initializable {
     private void handleButtonLogin(ActionEvent buttonPress){
         try{
             LOG.info("Login Button Pressed");
+            //if the user or password fields are empty, throw a message
+            if((userTxt.getText().equals("") || passwordTxt.getText().equals("")) || 
+               (userTxt.getText().equals("") && passwordTxt.getText().equals(""))){
+                LOG.info("Null value in User or password field");
+                errorLbl.setVisible(true);
+            }else{
+                
+            }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
         }  
@@ -120,34 +129,7 @@ public class SignInController implements Initializable {
             LOG.log(Level.SEVERE, "Close request error", ex);
         }  
     }
-    
-    //Calling this method sets the user and password field limit character (textProperty())
-    private void handleTextLimit(){
-        try{
-            LOG.info("Setting User and Password field limit character...");
-            //User field setting (lambda -- ChangeListener)
-            userTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                //if a 26 character its typed, take first character to 25 and set it to the field
-                if(userTxt.getText().length() > 25){
-                    userTxt.setText(userTxt.getText().substring(0, 25));
-                }
-                //controlar espacios
-                if(userTxt.getText().matches(" "+userTxt.getText()) || userTxt.getText().matches(userTxt.getText()+" ") ){
-                    LOG.info("espacio");
-                }
-            });
-            //Password field setting (lambda -- ChangeListener)
-            passwordTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                //if a 26 character its typed, take first character to 25 and set it to the field
-                if(passwordTxt.getText().length() > 25){
-                    userTxt.setText(passwordTxt.getText().substring(0, 25));
-                }
-            });
-        }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Error Setting User and Password field(handleTextChange)", ex);
-        }  
-    }
-    
+
     /**
      * Calling this method will open the SignUp window
      * 
@@ -206,5 +188,40 @@ public class SignInController implements Initializable {
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
         }*/
+    }
+    
+    //Calling this method sets the user and password field limit character (textProperty())
+    private void handleTextLimit(){
+        try{
+            LOG.info("Setting User and Password field limit character and other controls...");
+            //User field setting (lambda -- ChangeListener)
+            userTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                //if a 26 character its typed, take first character to 25 and set it to the field
+                if(userTxt.getText().length() > 25){
+                    userTxt.setText(userTxt.getText().substring(0, 25));
+                }
+                //Control empty spaces
+                if(userTxt.getText().contains(" ")){
+                    userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+                }
+                
+                errorLbl.setVisible(false);
+            });
+            //Password field setting (lambda -- ChangeListener)
+            passwordTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                //if a 26 character its typed, take first character to 25 and set it to the field
+                if(passwordTxt.getText().length() > 25){
+                    passwordTxt.setText(passwordTxt.getText().substring(0, 25));
+                }
+                //Control empty spaces
+                if(passwordTxt.getText().contains(" ")){
+                    passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
+                }
+                
+                errorLbl.setVisible(false);
+            });
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Error Setting User and Password field(handleTextChange)", ex);
+        }  
     }
 }
