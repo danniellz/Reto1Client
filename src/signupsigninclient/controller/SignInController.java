@@ -52,9 +52,7 @@ public class SignInController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        errorLbl.setVisible(false);
-        errorLbl.setText("Incorrect User or Password");
-        errorLbl.setStyle("-fx-text-fill: red");
+        
     }
     
     /**
@@ -85,7 +83,11 @@ public class SignInController implements Initializable {
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
             signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
-            handleTextLimit();
+            userTxt.textProperty().addListener(this::handleUserControl);
+            passwordTxt.textProperty().addListener(this::handlePasswordControl);
+            errorLbl.setVisible(false);
+            errorLbl.setText("Incorrect User or Password");
+            errorLbl.setStyle("-fx-text-fill: red");
             //ventana asincrona
             stage.show();
         }catch(Exception ex){
@@ -190,38 +192,53 @@ public class SignInController implements Initializable {
         }*/
     }
     
-    //Calling this method sets the user and password field limit character (textProperty())
-    private void handleTextLimit(){
+    /**
+     * Calling this method sets the user field controls (textProperty())
+     * 
+     * @param observable targeted field whose value changed
+     * @param oldValue previous value before change
+     * @param newValue last value typed
+     */
+    private void handleUserControl(ObservableValue<? extends String> observable, String oldValue, String newValue){
         try{
-            LOG.info("Setting User and Password field limit character and other controls...");
-            //User field setting (lambda -- ChangeListener)
-            userTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                //if a 26 character its typed, take first character to 25 and set it to the field
-                if(userTxt.getText().length() > 25){
-                    userTxt.setText(userTxt.getText().substring(0, 25));
-                }
-                //Control empty spaces
-                if(userTxt.getText().contains(" ")){
-                    userTxt.setText(userTxt.getText().replaceAll(" ", ""));
-                }
-                
-                errorLbl.setVisible(false);
-            });
-            //Password field setting (lambda -- ChangeListener)
-            passwordTxt.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                //if a 26 character its typed, take first character to 25 and set it to the field
-                if(passwordTxt.getText().length() > 25){
-                    passwordTxt.setText(passwordTxt.getText().substring(0, 25));
-                }
-                //Control empty spaces
-                if(passwordTxt.getText().contains(" ")){
-                    passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
-                }
-                
-                errorLbl.setVisible(false);
-            });
+            //if a 26 character its typed, take first character to 25 and set it to the field
+            if(userTxt.getText().length() > 25){
+                userTxt.setText(userTxt.getText().substring(0, 25));
+                LOG.info("25 character limit reached in user");
+            }
+            //Control empty spaces
+            if(userTxt.getText().contains(" ")){
+                 userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+            }
+            //Show error label
+             errorLbl.setVisible(false);
         }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Error Setting User and Password field(handleTextChange)", ex);
+            LOG.log(Level.SEVERE, "Error Setting User field control", ex);
+        }  
+    }
+    
+    /**
+     * Calling this method sets the password field controls (textProperty())
+     * 
+     * @param observable targeted field whose value changed
+     * @param oldValue previous value before change
+     * @param newValue last value type
+     */
+    private void handlePasswordControl(ObservableValue<? extends String> observable, String oldValue, String newValue){
+        try{
+            //if a 26 character its typed, take first character to 25 and set it to the field
+            if(passwordTxt.getText().length() > 25){
+                passwordTxt.setText(passwordTxt.getText().substring(0, 25));
+                LOG.info("25 character limit reached in password");
+            }
+            //Control empty spaces
+            if(passwordTxt.getText().contains(" ")){
+                passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
+            }
+            //Show error label
+            errorLbl.setVisible(false);
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Error Setting Password field control", ex);
         }  
     }
 }
