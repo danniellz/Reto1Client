@@ -80,6 +80,7 @@ public class SignInController implements Initializable {
             stage.setTitle("Sign In");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
+            stage.setOnShowing(this::handleServerConnection);
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
             signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
@@ -129,6 +130,14 @@ public class SignInController implements Initializable {
             Platform.exit();
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Close request error", ex);
+        }  
+    }
+    
+    private void handleServerConnection(WindowEvent onShowEvent){
+        try{
+            LOG.info("Getting the server connection..."); 
+        }catch(Exception ex){
+            LOG.log(Level.SEVERE, "Error trying to get the server connection", ex);
         }  
     }
 
