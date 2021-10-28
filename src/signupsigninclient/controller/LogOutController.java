@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -19,7 +20,6 @@ import javafx.stage.WindowEvent;
  */
 public class LogOutController {
     
-    
     private Stage stage;
     
     @FXML
@@ -28,7 +28,12 @@ public class LogOutController {
     private Label logOutLbl;
     @FXML
     private Label messageLbl;
+    @FXML
+    private MenuItem logOutItem;
+    @FXML
+    private MenuItem exitItem;
     
+    String name;
 
     //Atributes
     private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
@@ -48,7 +53,9 @@ public class LogOutController {
             stage.setTitle("LOG OUT");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
-            messageLbl.addEventHandler(ActionEvent.ACTION, this::handleMenuFile);
+            messageLbl.setText("Hello " + name + ", you have succesfully logged in!!");
+            logOutItem.setOnAction(this::handleLogOut);
+            exitItem.setOnAction(this::handleExit);
             stage.show();
         } catch (Exception e) {
              LOG.log(Level.SEVERE, "Stage init error", e);
@@ -61,26 +68,31 @@ public class LogOutController {
      * 
      * @param closeEvent A window event
      */
-    private void handleCloseRequest(WindowEvent closeEvent){
+    public void handleCloseRequest(WindowEvent closeEvent){
         try{
             LOG.info("Closing...");
             Platform.exit();
-        }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Close request error", ex);
+        }catch(Exception e){
+            LOG.log(Level.SEVERE, "Close request error", e);
         }  
     }
     
-    /**
-     * 
-     * @param buttonPress Action event at pressing the login button
-     */
-    private void handleMenuFile(ActionEvent buttonPress){
+    public void handleLogOut(ActionEvent logOutEvent) {
+        try {
+            LOG.info("Logging out...");
+            
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Log Out error", e);
+        }
+    }
+    
+    public void handleExit(ActionEvent closeEvent){
         try{
-            LOG.info("Login Button Pressed");
-        }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Login Button Error", ex);
+            LOG.info("Closing...");
+            Platform.exit();
+        }catch(Exception e){
+            LOG.log(Level.SEVERE, "Close request error", e);
         }  
     }
-
     
 }
