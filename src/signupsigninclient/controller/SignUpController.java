@@ -5,6 +5,7 @@
  */
 package signupsigninclient.controller;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -98,15 +99,15 @@ public class SignUpController {
     }
 
     public void initStage(Parent root) {
-        charlimit();
-        registerValidation();
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
         //  stage.setOnShowing(this::handleWindowShowing);
-
+        charlimit();
+        fullNameTxt.focusedProperty().addListener(this::focusLostEspChar);
+        emailTxt.focusedProperty().addListener(this::domainControl);
         stage.show();
     }
 
@@ -114,17 +115,22 @@ public class SignUpController {
 
     }*/
     /**
-     * this method puts a limit in the textLabels (25 limit except email textLabel)
+     * this method puts a limit in the textLabels (25 limit except email
+     * textLabel)
      */
     private void charlimit() {
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> ov, String t, String t1) {
-                if (userTxt.getText().length() > 25 ) {
+                if (userTxt.getText().length() > 25) {
                     userTxt.deletePreviousChar();
                     userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
+                    userErrorLbl.setText("25 characters limit reached");
+                    userErrorLbl.setStyle("-fx-text-fill: #DC143C");
                 } else {
                     userTxt.setStyle("-fx-border-color: White;");
+                    userErrorLbl.setText(" ");
+                    userErrorLbl.setStyle(" ");
                 }
             }
 
@@ -135,6 +141,11 @@ public class SignUpController {
                 if (fullNameTxt.getText().length() > 25) {
                     fullNameTxt.deletePreviousChar();
                     fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    fullNameErrorLbl.setText("25 characters limit reached");
+                    fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    emailErrorLbl.setText(" ");
+                    emailErrorLbl.setStyle(" ");
                 }
             }
         });
@@ -144,29 +155,58 @@ public class SignUpController {
                 if (emailTxt.getText().length() > 50) {
                     emailTxt.deletePreviousChar();
                     emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    emailErrorLbl.setText("50 characters limit reached");
+                    emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    emailErrorLbl.setText(" ");
+                    emailErrorLbl.setStyle(" ");
                 }
+
             }
         });
 
     }
 
-    private void registerValidation() {
-        Pattern espChar = Pattern.compile("[$&+,:;=?@#|'<>.-^*()%!0-9]");
-         fullNameTxt.hoverProperty().addListener(new ChangeListener<Boolean>(){
-             @Override
-             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-                 Matcher matcher = espChar.matcher(fullNameTxt.getText());
-                 Boolean est = matcher.matches();
-                 if(est){
-                     fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
-                     fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
-                 } else{
-                 fullNameErrorLbl.setText(" ");
-                  fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
-                 }
-             }
-         
-         
-         });
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    public void focusLostEspChar(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+        //cambiar el patron
+        // String comp = "[&+,:;=?@#|'<>*()%!0-9]";
+        //Patron 2.0
+        String comp = "[^A-Za-zÀ-ȕ\\s]";
+
+        Pattern espChar = Pattern.compile(comp);
+        Matcher matcher = espChar.matcher(fullNameTxt.getText().trim());
+        //este codigo solo se ejecuta cuando se pierde el Foco
+        if (oldValue) {
+            LOGGER.info("focus lost of  fullNameTxt");
+            if (matcher.find()) {
+                System.out.println("INCUMPLE" + matcher.find());
+                LOGGER.info("SI NO encuentra");
+                fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
+                fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
+
+            } else {
+                 LOGGER.info("SI encuentra");
+                System.out.println("CUMLE" + matcher.find());
+                fullNameErrorLbl.setText(" ");
+                fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
+
+            }
+        } else if (newValue) {
+            LOGGER.info("Focus gained on fullNameTxt");
+        }
     }
+    private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue){
+    
+    
+    
+    
+    }
+    
 }
