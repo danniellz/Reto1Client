@@ -5,19 +5,18 @@
  */
 package signupsigninclient.controller;
 
-import java.awt.Button;
-import java.awt.Label;
-import java.awt.TextField;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class the view SingUp
@@ -26,7 +25,8 @@ import javafx.stage.WindowEvent;
  */
 public class SignUpController {
 
-    private static final int MAX_LENGHT = 50;
+    private static final int LESS_LENGHT = 6;
+    private static final int MAX_LENGHT = 8;
     private static final int MAX_LENGHT_USER = 25;
     public static final Pattern VALIDEMAIL = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     public static final Pattern VALIDPASS = Pattern.compile("^[a-zA-Z0-9]+$");
@@ -59,7 +59,7 @@ public class SignUpController {
     @FXML
     private Label emailErrorLbl;
     @FXML
-    private Label paswordErrorLbl;
+    private Label passwordErrorLbl;
     @FXML
     private Label repeatPasswordErrorLbl;
     //HIPERLINK
@@ -95,12 +95,64 @@ public class SignUpController {
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
-        stage.setOnShowing(this::handleWindowShowing);
+        registerBtn.setDisable(true);
+        //  userTxt.textProperty().addListener(this::limitUserTextField);
+
+        passwordTxt.focusedProperty().addListener(this::focusChanged);
+        // passwordTxt.textProperty().addListener(this::checkSixCharacterPasswordTextField);
+        //passwordTxt.textProperty().addListener(this::limitPasswordTextField);
         stage.show();
     }
 
-    private void handleWindowShowing(WindowEvent event) {
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    private void focusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        if (newValue) {
+            passwordTxt.textProperty().addListener(this::limitPasswordTextField);
 
-        
+        } else if (oldValue) {
+
+            if (passwordTxt.getText().length() < LESS_LENGHT) {
+                String password = passwordTxt.getText();
+                passwordTxt.setText(password);
+                passwordErrorLbl.setText("Minimum of 6 characters required");
+                passwordErrorLbl.setTextFill(Color.web("#ff0000"));
+            } else {
+                passwordErrorLbl.setText("");
+            }
+        }
     }
+
+    private void checkSixCharacterPasswordTextField(ObservableValue obsevable, String oldValue, String newValue) {
+        if (passwordTxt.getText().length() < LESS_LENGHT) {
+            String password = passwordTxt.getText();
+            passwordTxt.setText(password);
+            passwordErrorLbl.setText("Minimum of 6 characters required");
+            passwordErrorLbl.setTextFill(Color.web("#ff0000"));
+            // passwordTxt.focusedProperty().addListener(this::focusChanged);
+        } else {
+            passwordErrorLbl.setText("");
+        }
+    }
+
+    private void limitPasswordTextField(ObservableValue obsevable, String oldValue, String newValue) {
+
+        if (passwordTxt.getText().length() > MAX_LENGHT) {
+
+            String password = passwordTxt.getText().substring(0, MAX_LENGHT);
+            passwordTxt.setText(password);
+
+            passwordErrorLbl.setText("Password must be less than 50 character");
+            passwordErrorLbl.setTextFill(Color.web("#ff0000"));
+        }
+        if (MAX_LENGHT < passwordTxt.getText().length()) {
+            passwordErrorLbl.setText("");
+        }
+
+    }
+
 }
