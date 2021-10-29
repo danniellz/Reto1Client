@@ -12,6 +12,8 @@ import javafx.scene.control.TextField;
 
 import java.beans.EventHandler;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +32,7 @@ import javafx.stage.WindowEvent;
 /**
  * FXML Controller class the view SingUp
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan , Aritz Arrieta
  */
 public class SignUpController {
 
@@ -111,9 +113,6 @@ public class SignUpController {
         stage.show();
     }
 
-    /* private void handleWindowShowing(WindowEvent event) {
-
-    }*/
     /**
      * this method puts a limit in the textLabels (25 limit except email
      * textLabel)
@@ -168,16 +167,15 @@ public class SignUpController {
     }
 
     /**
+     * this method is a focus lost action, that test if the full name don´t puts
+     * any especial characteres
      *
-     * @param observable
-     * @param oldValue
-     * @param newValue
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
      */
     public void focusLostEspChar(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
-        //cambiar el patron
-        // String comp = "[&+,:;=?@#|'<>*()%!0-9]";
-        //Patron 2.0
         String comp = "[^A-Za-zÀ-ȕ\\s]";
 
         Pattern espChar = Pattern.compile(comp);
@@ -192,7 +190,7 @@ public class SignUpController {
                 fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
 
             } else {
-                 LOGGER.info("SI encuentra");
+                LOGGER.info("SI encuentra");
                 System.out.println("CUMLE" + matcher.find());
                 fullNameErrorLbl.setText(" ");
                 fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
@@ -202,11 +200,27 @@ public class SignUpController {
             LOGGER.info("Focus gained on fullNameTxt");
         }
     }
-    private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue){
-    
-    
-    
-    
+    /**
+     * domain control checks from "@" if domain of email is valid 
+     * 
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
+     */
+    private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (oldValue) {
+             LOGGER.info("Focus Lost on fullNameTxt");
+            List<String> validDomains = Arrays.asList("gmail.com", "yahoo.com", "hotmail.com","gmail.eus");
+            if (!(validDomains.contains(emailTxt.getText().substring(emailTxt.getText().indexOf("@") + 1)))) {
+                emailErrorLbl.setText("ERROR domain not valid");
+                emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
+            } else {
+                emailErrorLbl.setText(" ");
+                emailErrorLbl.setStyle("-fx-border-color: WHITE;");
+            }
+        } else if (newValue) {
+            LOGGER.info("Focus gained on fullNameTxt");
+        }
     }
-    
+
 }
