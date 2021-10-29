@@ -20,6 +20,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import message.Message;
+import signable.Signable;
+import signupsigninclient.logic.SignableFactory;
+import signupsigninclient.logic.SignableImplement;
+import user.User;
 
 /**
  * SignIn window controller class 
@@ -40,6 +45,9 @@ public class SignInController implements Initializable {
     private Hyperlink signUpHl;
     @FXML
     private Label errorLbl;
+    private SignableFactory signableFactory;
+    private User user;
+    private String username, password;
     
     //LOGGER
     private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
@@ -104,15 +112,21 @@ public class SignInController implements Initializable {
      * @param buttonPress Action event at pressing the login button
      */
     private void handleButtonLogin(ActionEvent buttonPress){
+        username = userTxt.getText();
+        password = passwordTxt.getText();
         try{
             LOG.info("Login Button Pressed");
             //if the user or password fields are empty, throw a message
-            if((userTxt.getText().equals("") || passwordTxt.getText().equals("")) || 
-               (userTxt.getText().equals("") && passwordTxt.getText().equals(""))){
+            if((username.equals("") || password.equals("")) || 
+               (username.equals("") && password.equals(""))){
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
-            }else{
-                
+            }else{//arregarlo
+                LOG.info("Proccesing user info...");
+                user.setLogin(username);
+                user.setPassword(password);
+                Signable sign = signableFactory.getSignable();
+                sign.signIn(user);
             }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
@@ -133,9 +147,17 @@ public class SignInController implements Initializable {
         }  
     }
     
-    private void handleServerConnection(WindowEvent onShowEvent){
+    /**
+     * Calling this methos will connect with the server project
+     * 
+     * @param onShowingEvent execute just before showing the window
+     */
+    private void handleServerConnection(WindowEvent onShowingEvent){
+        Message m = new Message();
         try{
-            LOG.info("Getting the server connection..."); 
+            LOG.info("Getting the server connection...");
+            SignableImplement s = new SignableImplement();
+            s.serverConnection(m);
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Error trying to get the server connection", ex);
         }  
