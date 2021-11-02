@@ -20,6 +20,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import signable.Signable;
+import signupsigninclient.logic.SignableFactory;
+import user.User;
 
 /**
  * SignIn window controller class 
@@ -29,7 +32,7 @@ import javafx.stage.WindowEvent;
  */
 public class SignInController implements Initializable {
     //Attributes, @FXML allows interaction with controls from the FXML file
-    private Stage stage;
+    private Stage stage, logOutStage;
     @FXML
     private TextField userTxt;
     @FXML
@@ -40,6 +43,7 @@ public class SignInController implements Initializable {
     private Hyperlink signUpHl;
     @FXML
     private Label errorLbl;
+    private String username, password;
     
     //LOGGER
     private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
@@ -80,7 +84,6 @@ public class SignInController implements Initializable {
             stage.setTitle("Sign In");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
-            stage.setOnShowing(this::handleServerConnection);
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
             signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
@@ -104,15 +107,38 @@ public class SignInController implements Initializable {
      * @param buttonPress Action event at pressing the login button
      */
     private void handleButtonLogin(ActionEvent buttonPress){
+        username = userTxt.getText();
+        password = passwordTxt.getText();
         try{
             LOG.info("Login Button Pressed");
             //if the user or password fields are empty, throw a message
-            if((userTxt.getText().equals("") || passwordTxt.getText().equals("")) || 
-               (userTxt.getText().equals("") && passwordTxt.getText().equals(""))){
+            if((username.equals("") || password.equals("")) || 
+               (username.equals("") && password.equals(""))){
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
             }else{
+                LOG.info("Proccesing user info...");
+                User user = new User();
+                user.setLogin(username);
+                user.setPassword(password);
+                Signable sign = new SignableFactory().getSignable();
                 
+                sign.signIn(user);
+                
+                /*try{
+                    LOG.info("Starting LogOut Window...");
+                    //Load the FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
+                    Parent root = (Parent)loader.load();
+                    //Get controller
+                    LogOutController logOutController = ((LogOutController)loader.getController()); 
+                    //Set the stage
+                    logOutController.setStage(logOutStage);
+                    //initialize the window
+                    logOutController.initStage(root, user);
+                }catch(IOException ex){
+                    LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
+                }*/
             }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
@@ -130,14 +156,6 @@ public class SignInController implements Initializable {
             Platform.exit();
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Close request error", ex);
-        }  
-    }
-    
-    private void handleServerConnection(WindowEvent onShowEvent){
-        try{
-            LOG.info("Getting the server connection..."); 
-        }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Error trying to get the server connection", ex);
         }  
     }
 
@@ -175,29 +193,6 @@ public class SignInController implements Initializable {
             SignUpController.initStage(root);
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
-        }*/
-    }
-    
-    /**
-     * Open the LogOut window
-     * 
-     * @param primaryStage stage object (window)
-     * @throws IOException Throws an error if the LogOut window fails to open
-     */
-    private void startLogOutWindow(Stage primaryStage) throws IOException{
-        /*try{
-            LOG.info("Starting LogOut Window...");
-            //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
-            Parent root = (Parent)loader.load();
-            //Get controller
-            LogOutController logOutController = ((LogOutController)loader.getController()); 
-            //Set the stage
-            LogOutController.setStage(primaryStage);
-            //initialize the window
-            LogOutController.initStage(root);
-        }catch(IOException ex){
-            LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
         }*/
     }
     
