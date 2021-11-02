@@ -32,7 +32,7 @@ import user.User;
  */
 public class SignInController implements Initializable {
     //Attributes, @FXML allows interaction with controls from the FXML file
-    private Stage stage;
+    private Stage stage, logOutStage;
     @FXML
     private TextField userTxt;
     @FXML
@@ -125,16 +125,20 @@ public class SignInController implements Initializable {
                 
                 sign.signIn(user);
                 
-                /*LOG.info("Starting LogOut Window...");
-                //Load the FXML file
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
-                Parent root = (Parent)loader.load();
-                //Get controller
-                LogOutController signUpController = ((LogOutController)loader.getController()); 
-                //Set the stage
-                LogOutController.setStage(primaryStage);
-                //initialize the window
-                LogOutController.initStage(root);*/
+                /*try{
+                    LOG.info("Starting LogOut Window...");
+                    //Load the FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
+                    Parent root = (Parent)loader.load();
+                    //Get controller
+                    LogOutController logOutController = ((LogOutController)loader.getController()); 
+                    //Set the stage
+                    logOutController.setStage(logOutStage);
+                    //initialize the window
+                    logOutController.initStage(root, user);
+                }catch(IOException ex){
+                    LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
+                }*/
             }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
