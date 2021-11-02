@@ -20,10 +20,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import message.Message;
 import signable.Signable;
 import signupsigninclient.logic.SignableFactory;
-import signupsigninclient.logic.SignableImplement;
 import user.User;
 
 /**
@@ -45,8 +43,6 @@ public class SignInController implements Initializable {
     private Hyperlink signUpHl;
     @FXML
     private Label errorLbl;
-    private SignableFactory signableFactory;
-    private User user;
     private String username, password;
     
     //LOGGER
@@ -88,7 +84,6 @@ public class SignInController implements Initializable {
             stage.setTitle("Sign In");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
-            stage.setOnShowing(this::handleServerConnection);
             //Controls
             loginBtn.addEventHandler(ActionEvent.ACTION, this::handleButtonLogin);
             signUpHl.addEventHandler(ActionEvent.ACTION, this::handleSignUpHyperLink);
@@ -121,12 +116,25 @@ public class SignInController implements Initializable {
                (username.equals("") && password.equals(""))){
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
-            }else{//arregarlo
+            }else{
                 LOG.info("Proccesing user info...");
+                User user = new User();
                 user.setLogin(username);
                 user.setPassword(password);
-                Signable sign = signableFactory.getSignable();
+                Signable sign = new SignableFactory().getSignable();
+                
                 sign.signIn(user);
+                
+                /*LOG.info("Starting LogOut Window...");
+                //Load the FXML file
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
+                Parent root = (Parent)loader.load();
+                //Get controller
+                LogOutController signUpController = ((LogOutController)loader.getController()); 
+                //Set the stage
+                LogOutController.setStage(primaryStage);
+                //initialize the window
+                LogOutController.initStage(root);*/
             }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
@@ -144,22 +152,6 @@ public class SignInController implements Initializable {
             Platform.exit();
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Close request error", ex);
-        }  
-    }
-    
-    /**
-     * Calling this methos will connect with the server project
-     * 
-     * @param onShowingEvent execute just before showing the window
-     */
-    private void handleServerConnection(WindowEvent onShowingEvent){
-        Message m = new Message();
-        try{
-            LOG.info("Getting the server connection...");
-            SignableImplement s = new SignableImplement();
-            s.serverConnection(m);
-        }catch(Exception ex){
-            LOG.log(Level.SEVERE, "Error trying to get the server connection", ex);
         }  
     }
 
@@ -197,29 +189,6 @@ public class SignInController implements Initializable {
             SignUpController.initStage(root);
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
-        }*/
-    }
-    
-    /**
-     * Open the LogOut window
-     * 
-     * @param primaryStage stage object (window)
-     * @throws IOException Throws an error if the LogOut window fails to open
-     */
-    private void startLogOutWindow(Stage primaryStage) throws IOException{
-        /*try{
-            LOG.info("Starting LogOut Window...");
-            //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
-            Parent root = (Parent)loader.load();
-            //Get controller
-            LogOutController logOutController = ((LogOutController)loader.getController()); 
-            //Set the stage
-            LogOutController.setStage(primaryStage);
-            //initialize the window
-            LogOutController.initStage(root);
-        }catch(IOException ex){
-            LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
         }*/
     }
     

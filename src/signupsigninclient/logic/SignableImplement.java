@@ -28,9 +28,10 @@ public class SignableImplement implements Signable{
      * Request a Sign In
      * 
      * @param user the user object containing the user data
+     * @return 
      */
     @Override
-    public void signIn(User user) {
+    public User signIn(User user) {
         try{
            Message msg = new Message();
            msg.setUser(user);
@@ -40,12 +41,10 @@ public class SignableImplement implements Signable{
            
         }catch(ConnectionException ex){
             LOG.log(Level.SEVERE, "An error occurred in SignIn process", ex);
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setTitle("SignUp Error");
-            alert.setContentText("An error has occurred trying to Sign In");
-            alert.showAndWait();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
         }  
+        return user;
     }
 
     /**
@@ -68,6 +67,8 @@ public class SignableImplement implements Signable{
             alert.setTitle("SignUp Error");
             alert.setContentText("An error has occurred trying to Sign Up");
             alert.showAndWait();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
         }  
     }
 
@@ -75,26 +76,25 @@ public class SignableImplement implements Signable{
      * Connect with the server project sending a user object and the type of request (SignIn or SignUp)
      * 
      * @param message the message class contains the user and the request type
+     * @throws exceptions.ConnectionException
+     * @throws java.lang.ClassNotFoundException
      */
-    public void serverConnection(Message message) throws ConnectionException{
+    public void serverConnection(Message message) throws ConnectionException, ClassNotFoundException{
         final int PORT = Integer.parseInt(ResourceBundle.getBundle("signupsigninclient.file/config").getString("PORT"));
         final String SERVER = ResourceBundle.getBundle("signupsigninclient.file/config").getString("SERVER");
         ObjectInputStream inO;
         ObjectOutputStream outO;
         try{
             LOG.info("Initializing Client...");
-            Socket clientSc;
             //local host, data can be change in the configuration file (config.properties)
             try{
-                clientSc = new Socket(SERVER, PORT);
+                Socket clientSc = new Socket(SERVER, PORT);
                 LOG.info("Client > Initialized");
-                /*outO = new ObjectOutputStream(clientSc.getOutputStream()); //enviar mensaje
-                inO = new ObjectInputStream(clientSc.getInputStream()); //recibir mensaje
-                
+                outO = new ObjectOutputStream(clientSc.getOutputStream()); //enviar mensaje
                 outO.writeObject(message);
+                LOG.info("Client > Message Sent");
                 
-                outO.close();*/
-                clientSc.close();
+                outO.close();
             }catch(IOException ex){
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText(null);
