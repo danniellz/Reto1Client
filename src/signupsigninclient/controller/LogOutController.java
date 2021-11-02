@@ -12,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import user.User;
 
 /**
  * Log Out Controller
@@ -32,8 +33,6 @@ public class LogOutController {
     private MenuItem logOutItem;
     @FXML
     private MenuItem exitItem;
-    
-    String name;
 
     //Atributes
     private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
@@ -46,14 +45,14 @@ public class LogOutController {
         stage = logOutStage;
     }
 
-    public void initStage(Parent root) {
+    public void initStage(Parent root, User user) {
         try {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("LOG OUT");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
-            messageLbl.setText("Hello " + name + ", you have succesfully logged in!!");
+            messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
             stage.show();
