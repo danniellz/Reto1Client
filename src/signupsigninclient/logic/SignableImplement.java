@@ -99,18 +99,18 @@ public class SignableImplement implements Signable{
                     LOG.info("Client > SIGN UP REQUEST SENT");
                 }
                 
-                /*//Receive message
+                //Receive message
                 inO = new ObjectInputStream(clientSc.getInputStream()); //Recibir mensaje
-                message = (Message) inO.readObject();*/
-                
+                message = (Message) inO.readObject();
+
                 //Close
                 outO.close();
-                //inO.close();
+                inO.close();
             }catch(IOException ex){
                 alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setTitle("Server Connection error");
-                alert.setContentText("Server not available");
+                alert.setTitle("Error");
+                alert.setHeaderText("Server Connection Error");
+                alert.setContentText("Server is not available, please, try again later");
                 alert.showAndWait();
                 throw new exceptions.ConnectionException();     
             }      

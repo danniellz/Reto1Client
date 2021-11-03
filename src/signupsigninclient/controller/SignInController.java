@@ -1,8 +1,7 @@
 package signupsigninclient.controller;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -10,10 +9,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -30,9 +30,9 @@ import user.User;
  * @author Daniel Brizuela
  * @version 1.0
  */
-public class SignInController implements Initializable {
+public class SignInController {
     //Attributes, @FXML allows interaction with controls from the FXML file
-    private Stage stage, logOutStage;
+    private Stage stage;
     @FXML
     private TextField userTxt;
     @FXML
@@ -47,17 +47,6 @@ public class SignInController implements Initializable {
     
     //LOGGER
     private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
-    
-    /**
-     * Initialize method from implements Initializable
-     * 
-     * @param location
-     * @param resources 
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        
-    }
     
     /**
      * Set the primary stage
@@ -152,8 +141,22 @@ public class SignInController implements Initializable {
      */
     private void handleCloseRequest(WindowEvent closeEvent){
         try{
-            LOG.info("Closing...");
-            Platform.exit();
+            LOG.info("Confirm Closing");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("¿Are you sure you want to exit?");
+            alert.setTitle("Exit");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK) {
+                LOG.info("Closing...");
+                Platform.exit();
+            }else{
+                LOG.info("Closing Canceled");
+                //Cancel the event process
+                closeEvent.consume();
+            }
+            
+        
+            
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Close request error", ex);
         }  
@@ -167,7 +170,7 @@ public class SignInController implements Initializable {
     private void handleSignUpHyperLink(ActionEvent HyperLinkPress){
         try{
             LOG.info("SignUp Hyper Link Pressed");
-            startSignUpWindow(stage);
+            startSignUpWindow();
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "HyperLink Error", ex);
         }  
@@ -179,18 +182,18 @@ public class SignInController implements Initializable {
      * @param primaryStage stage object (window)
      * @throws IOException Throws an error if the SignUp window fails to open
      */
-    private void startSignUpWindow(Stage primaryStage) throws IOException{
+    private void startSignUpWindow() throws IOException{
         /*try{
             LOG.info("Starting SignUp Window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignUp.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignUp.fxml"));
             Parent root = (Parent)loader.load();
             //Get controller
             SignUpController signUpController = ((SignUpController)loader.getController()); 
             //Set the stage
-            SignUpController.setStage(primaryStage);
+            signUpController.setStage(stage);
             //initialize the window
-            SignUpController.initStage(root);
+            signUpController.initStage(root);
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
         }*/
