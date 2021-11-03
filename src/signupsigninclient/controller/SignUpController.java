@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -115,6 +116,7 @@ public class SignUpController {
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
+        stage.setOnCloseRequest(this::closeProgramSingUp);
         registerBtn.setDisable(true);
 
         disableButtonWhenTextFieldsEmpty();
@@ -122,6 +124,7 @@ public class SignUpController {
         registerBtn.setOnAction(this::registerValidation);
         passwordTxt.focusedProperty().addListener(this::focusChanged);
         repeatPasswordTxt.focusedProperty().addListener(this::focusChangeRepeatPassword);
+
         stage.show();
     }
 
@@ -222,9 +225,11 @@ public class SignUpController {
      * @return "error" boolean if the two passwords don't match.
      */
     private boolean checkPasswordsEqual() {
+        LOG.info("comprobando contraseñas si son iguales");
         boolean error = false;
 
-        if (passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
+        if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
+           LOG.info("error de contraseñas");
             repeatPasswordErrorLbl.setText("Passwords don't match");
             repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
@@ -263,14 +268,13 @@ public class SignUpController {
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
 
-        if (!errorPassEqual) {
-            //    openSignInWindow();
-        } else if (errorPassEqual) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (errorPassEqual) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
-            alert.setTitle("ERROR CAMPOS");
-            alert.setContentText("Los campos son invalidos");
+            alert.setTitle("Info");
+            alert.setContentText("ERROR PASSWORS IN CORRECT");
             alert.showAndWait();
+            //    openSignInWindow();
         }
 
     }
@@ -296,7 +300,7 @@ public class SignUpController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("signupsigninclient/view/SignIn.fxml"));
         Parent root = (Parent) loader.load();
 
-       //  UISignInController controller = ((UISignInController) loader.getController());
+        //  UISignInController controller = ((UISignInController) loader.getController());
         //controller.setStage(primaryStage);
         //7controller.initStage(root);
     }
@@ -308,12 +312,15 @@ public class SignUpController {
      * @param e
      */
     @FXML
-    public void cerrarProgramaSignIn(WindowEvent e) {
+    public void closeProgramSingUp(WindowEvent e) {
+        LOG.info("close program");
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Cerrar Programa");
-        alert.setHeaderText("Estas seguro de cerrar el programa");
-        Optional<ButtonType> okButton = alert.showAndWait();
-        if (okButton.isPresent() && okButton.get() == ButtonType.CANCEL) {
+        alert.setTitle("Close Program");
+        alert.setHeaderText("Do you really want to Log Out?");
+        Optional<ButtonType> resp = alert.showAndWait();
+        if (resp.get() == ButtonType.OK) {
+            Platform.exit();
+        }else{
             e.consume();
         }
     }
