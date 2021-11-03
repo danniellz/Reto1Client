@@ -1,10 +1,12 @@
 package signupsigninclient.controller;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -33,7 +35,7 @@ public class LogOutController {
     private MenuItem logOutItem;
     @FXML
     private MenuItem exitItem;
-
+    
     //Atributes
     private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
 
@@ -47,9 +49,10 @@ public class LogOutController {
 
     public void initStage(Parent root, User user) {
         try {
+            LOG.info("Initializing stage...");
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("LOG OUT");
+            stage.setTitle("Log Out");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
             messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
@@ -80,8 +83,9 @@ public class LogOutController {
         try {
             LOG.info("Logging out...");
             
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Log Out error", e);
+            startSignInWindow(stage);
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Log Out error", ex);
         }
     }
     
@@ -92,6 +96,29 @@ public class LogOutController {
         }catch(Exception e){
             LOG.log(Level.SEVERE, "Close request error", e);
         }  
+    }
+    
+    /**
+     * Open the SignIn window
+     * 
+     * @param primaryStage stage object (window)
+     * @throws IOException Throws an error if the SignUp window fails to open
+     */
+    private void startSignInWindow(Stage primaryStage) throws IOException{
+        try{
+            LOG.info("Starting SignIn Window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            SignInController signinController = ((SignInController)loader.getController()); 
+            //Set the stage
+            signinController.setStage(primaryStage);
+            //initialize the window
+            signinController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
+        }
     }
     
 }
