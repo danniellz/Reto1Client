@@ -1,5 +1,11 @@
 package signupsigninclient;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import signupsigninclient.controller.SignUpController;
+
 /**
  * class responsible for starting the application
  * 
@@ -36,8 +42,9 @@ public class SignUpSignInClient extends Application{
     * 
     * @param args the command line arguments
     */
+
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }
