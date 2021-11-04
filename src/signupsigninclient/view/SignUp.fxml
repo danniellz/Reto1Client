@@ -10,38 +10,48 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane id="signUpPanel" prefHeight="382.0" prefWidth="569.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsigninclient.controller.SignUpController">
+<Pane  fx:id="signUpPanel" prefHeight="382.0" prefWidth="569.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="signupsigninclient.controller.SignUpController">
     <children>
-        <Label id="signUpLbl" layoutX="55.0" layoutY="40.0" text="Sign Up">
+        <Label fx:id="signUpLbl" layoutX="55.0" layoutY="40.0" text="Sign Up">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>
         </Label>
-        <Label id="userLbl" layoutX="57.0" layoutY="90.0" prefHeight="17.0" prefWidth="28.0" text="User" />
+
+        <Label fx:id="userLbl" layoutX="57.0" layoutY="90.0" prefHeight="17.0" prefWidth="28.0" text="User" />
+
         <TextField fx:id="userTxt" layoutX="160.0" layoutY="86.0" prefHeight="25.0" prefWidth="294.0" promptText="example">
             <tooltip>
                 <Tooltip text="Create your username" />
             </tooltip>
         </TextField>
-        <Label id="fullNameLbl" layoutX="57.0" layoutY="132.0" prefHeight="17.0" prefWidth="56.0" text="Full name" />
+
+        <Label fx:id="fullNameLbl" layoutX="57.0" layoutY="132.0" prefHeight="17.0" prefWidth="56.0" text="Full name" />
+
         <TextField fx:id="fullNameTxt" layoutX="160.0" layoutY="128.0" prefHeight="25.0" prefWidth="294.0" promptText="Example Example">
             <tooltip>
                 <Tooltip text="Enter your full name" />
             </tooltip>
         </TextField>
-        <Label id="emailLbl" layoutX="57.0" layoutY="174.0" prefHeight="17.0" prefWidth="36.0" text="Email" />
+
+        <Label fx:id="emailLbl" layoutX="57.0" layoutY="174.0" prefHeight="17.0" prefWidth="36.0" text="Email" />
+
         <TextField fx:id="emailTxt" layoutX="160.0" layoutY="170.0" prefHeight="25.0" prefWidth="294.0" promptText="example@example.com">
             <tooltip>
                 <Tooltip text="Enter your email" />
             </tooltip>
         </TextField>
-        <Label id="passwordLbl" layoutX="54.0" layoutY="214.0" text="Password" />
+
+        <Label fx:id="passwordLbl" layoutX="54.0" layoutY="214.0" text="Password" />
+
         <PasswordField fx:id="passwordTxt" layoutX="160.0" layoutY="210.0" prefHeight="25.0" prefWidth="294.0" promptText="********">
             <tooltip>
                 <Tooltip text="Create a password" />
             </tooltip>
         </PasswordField>
-        <Label id="repeatPasswordLbl" layoutX="54.0" layoutY="258.0" text="Repeat Password" />
+
+        <Label fx:id="repeatPasswordLbl" layoutX="54.0" layoutY="258.0" text="Repeat Password" />
+
         <PasswordField fx:id="repeatPasswordTxt" layoutX="160.0" layoutY="254.0" prefHeight="25.0" prefWidth="294.0" promptText="********">
             <tooltip>
                 <Tooltip text="Repeat previous password" />
@@ -55,7 +65,9 @@
                 <Tooltip text="Sign In" />
             </tooltip>
         </Hyperlink>
-        <Button fx:id="registerBtn" layoutX="454.0" layoutY="317.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="82.0" text="REGISTER">
+
+        <Button  fx:id="registerBtn" layoutX="454.0" layoutY="317.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="82.0" text="REGISTER">
+
             <font>
                 <Font name="System Bold" size="12.0" />
             </font>
@@ -63,7 +75,9 @@
         <Label fx:id="userErrorLbl" layoutX="160.0" layoutY="111.0" prefHeight="17.0" prefWidth="294.0" />
         <Label fx:id="fullNameErrorLbl" layoutX="160.0" layoutY="153.0" prefHeight="17.0" prefWidth="294.0" />
         <Label fx:id="emailErrorLbl" layoutX="160.0" layoutY="195.0" prefHeight="17.0" prefWidth="294.0" />
-        <Label fx:id="paswordErrorLbl" layoutX="160.0" layoutY="235.0" prefHeight="17.0" prefWidth="294.0" />
+
+        <Label fx:id="passwordErrorLbl" layoutX="160.0" layoutY="235.0" prefHeight="17.0" prefWidth="294.0" />
+
         <Label fx:id="repeatPasswordErrorLbl" layoutX="160.0" layoutY="279.0" prefHeight="17.0" prefWidth="294.0" />
     </children>
     <opaqueInsets>
