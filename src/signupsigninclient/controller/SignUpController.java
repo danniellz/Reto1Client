@@ -94,10 +94,10 @@ public class SignUpController {
 
     /**
      *
-     * @param singUpStage
+     * @param signUpStage
      */
-    public void setStage(Stage singUpStage) {
-        stage = singUpStage;
+    public void setStage(Stage signUpStage) {
+        stage = signUpStage;
     }
 
     public void initStage(Parent root) {
