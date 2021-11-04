@@ -1,10 +1,13 @@
 package signupsigninclient;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import signupsigninclient.controller.SignUpController;
+import signupsigninclient.controller.SignInController;
 
 /**
  * class responsible for starting the application
@@ -13,6 +16,8 @@ import signupsigninclient.controller.SignUpController;
  * @version 1.0
  */
 public class SignUpSignInClient extends Application{
+    //LOGGER
+    private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
     /**
      * This is the first window (SignIn)
      * 

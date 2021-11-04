@@ -47,7 +47,13 @@ public class LogOutController {
         stage = logOutStage;
     }
 
-    public void initStage(Parent root, User user) {
+    public void initData(User user) {
+        String fullName;
+        fullName = user.getFullName();
+        messageLbl.setText("Hello " + fullName + ", you have succesfully logged in!!");
+    }
+    
+    public void initStage(Parent root) {
         try {
             LOG.info("Initializing stage...");
             Scene scene = new Scene(root);
@@ -55,7 +61,6 @@ public class LogOutController {
             stage.setTitle("Log Out");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
-            messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
             stage.show();
@@ -119,6 +124,5 @@ public class LogOutController {
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
         }
-    }
-    
+    } 
 }
