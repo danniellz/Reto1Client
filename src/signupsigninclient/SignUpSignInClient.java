@@ -25,7 +25,9 @@ public class SignUpSignInClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/SignUp.fxml"));
         Parent root = (Parent) loader.load();
 
-        SignUpController controllerSignUp  = ((SignUpController) loader.getController());
+
+        SignUpController controllerSignUp = ((SignUpController) loader.getController());
+
         controllerSignUp.setStage(primaryStage);
         controllerSignUp.initStage(root);
     }

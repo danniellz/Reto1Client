@@ -5,17 +5,30 @@
  */
 package signupsigninclient.controller;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import java.beans.EventHandler;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.beans.value.ChangeListener;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,7 +44,7 @@ import javafx.stage.WindowEvent;
 /**
  * FXML Controller class the view SingUp
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan , Aritz Arrieta
  */
 public class SignUpController {
 
@@ -98,10 +111,12 @@ public class SignUpController {
     /**
      * Defines which view is going to show up when the application executes.
      *
+
      * @param stageSignUp the view that will show from the main application.
      */
     public void setStage(Stage primaryStage) {
         stage = primaryStage;
+
     }
 
     /**
@@ -110,12 +125,20 @@ public class SignUpController {
      * @param root loads all the nodes that descend from root.
      */
     public void initStage(Parent root) {
+
         LOG.info("Initializing stage...");
+
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
+
+        //  stage.setOnShowing(this::handleWindowShowing);
+        charlimit();
+        fullNameTxt.focusedProperty().addListener(this::focusLostEspChar);
+        emailTxt.focusedProperty().addListener(this::domainControl);
+
         stage.setOnCloseRequest(this::closeProgramSingUp);
         registerBtn.setDisable(true);
 
@@ -125,10 +148,120 @@ public class SignUpController {
         passwordTxt.focusedProperty().addListener(this::focusChanged);
         repeatPasswordTxt.focusedProperty().addListener(this::focusChangeRepeatPassword);
 
+
         stage.show();
     }
 
     /**
+      *+*************Start ARITZ****************************
+     * this method puts a limit in the textLabels (25 limit except email
+     * textLabel)
+     */
+    private void charlimit() {
+        userTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (userTxt.getText().length() > 25) {
+                    userTxt.deletePreviousChar();
+                    userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
+                    userErrorLbl.setText("25 characters limit reached");
+                    userErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    userTxt.setStyle("-fx-border-color: White;");
+                    userErrorLbl.setText(" ");
+                    userErrorLbl.setStyle(" ");
+                }
+            }
+
+        });
+        fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (fullNameTxt.getText().length() > 25) {
+                    fullNameTxt.deletePreviousChar();
+                    fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    fullNameErrorLbl.setText("25 characters limit reached");
+                    fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    emailErrorLbl.setText(" ");
+                    emailErrorLbl.setStyle(" ");
+                }
+            }
+        });
+        emailTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+                if (emailTxt.getText().length() > 50) {
+                    emailTxt.deletePreviousChar();
+                    emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    emailErrorLbl.setText("50 characters limit reached");
+                    emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    emailErrorLbl.setText(" ");
+                    emailErrorLbl.setStyle(" ");
+                }
+
+            }
+        });
+
+    }
+
+    /**
+     * this method is a focus lost action, that test if the full name don´t puts
+     * any especial characteres
+     *
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
+     */
+    public void focusLostEspChar(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+        String comp = "[^A-Za-zÀ-ȕ\\s]";
+
+        Pattern espChar = Pattern.compile(comp);
+        Matcher matcher = espChar.matcher(fullNameTxt.getText().trim());
+        //este codigo solo se ejecuta cuando se pierde el Foco
+        if (oldValue) {
+            LOGGER.info("focus lost of  fullNameTxt");
+            if (matcher.find()) {
+                System.out.println("INCUMPLE" + matcher.find());
+                LOGGER.info("SI NO encuentra");
+                fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
+                fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
+
+            } else {
+                LOGGER.info("SI encuentra");
+                System.out.println("CUMLE" + matcher.find());
+                fullNameErrorLbl.setText(" ");
+                fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
+
+            }
+        } else if (newValue) {
+            LOGGER.info("Focus gained on fullNameTxt");
+        }
+    }
+    /**
+     * domain control checks from "@" if domain of email is valid 
+     * 
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
+     */
+    private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (oldValue) {
+             LOGGER.info("Focus Lost on fullNameTxt");
+            List<String> validDomains = Arrays.asList("gmail.com", "yahoo.com", "hotmail.com","gmail.eus");
+            if (!(validDomains.contains(emailTxt.getText().substring(emailTxt.getText().indexOf("@") + 1)))) {
+                emailErrorLbl.setText("ERROR domain not valid");
+                emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
+            } else {
+                emailErrorLbl.setText(" ");
+                emailErrorLbl.setStyle("-fx-border-color: WHITE;");
+            }
+        } else if (newValue) {
+            LOGGER.info("Focus gained on fullNameTxt");
+        }
+// final parte aritz
      *
      * @param observable
      * @param oldValue
@@ -337,6 +470,7 @@ public class SignUpController {
         alert.setTitle("Confirmacion");
         alert.setContentText("¿Deseas realmente confirmar?");
         alert.showAndWait();
+
     }
 
 }
