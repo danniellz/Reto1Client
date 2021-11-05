@@ -417,7 +417,6 @@ public class SignUpController {
      * @return
      */
     private void clickHyperlink(ActionEvent HyperLinkPress) {
-        LOG.info("click hyperlink");
         try {
             LOG.info("SignUp Hyper Link Pressed");
             startSignInWindow(stage);
@@ -427,13 +426,20 @@ public class SignUpController {
     }
 
     private void startSignInWindow(Stage primaryStage) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("signupsigninclient/view/SignIn.fxml"));
-        Parent root = (Parent) loader.load();
-
-        //  UISignInController controller = ((UISignInController) loader.getController());
-        //controller.setStage(primaryStage);
-        //7controller.initStage(root);
+        try{
+            LOG.info("Starting SignIn window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            SignInController signinController = ((SignInController)loader.getController()); 
+            //Set the stage
+            signinController.setStage(primaryStage);
+            //initialize the window
+            signinController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting SignIn window", ex);
+        }
     }
 
     /**

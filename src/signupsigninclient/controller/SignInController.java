@@ -184,7 +184,7 @@ public class SignInController {
      * @throws IOException Throws an error if the SignUp window fails to open
      */
     private void startSignUpWindow() throws IOException{
-        /*try{
+        try{
             LOG.info("Starting SignUp Window...");
             //Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignUp.fxml"));
@@ -197,7 +197,7 @@ public class SignInController {
             signUpController.initStage(root);
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
-        }*/
+        }
     }
     
     /**
