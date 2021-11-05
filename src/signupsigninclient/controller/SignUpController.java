@@ -5,7 +5,6 @@
  */
 package signupsigninclient.controller;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -47,6 +46,7 @@ import javafx.stage.WindowEvent;
  * @author Jonathan Viñan , Aritz Arrieta
  */
 public class SignUpController {
+    private static final Logger LOG = Logger.getLogger(SignUpController.class.getName());
 
     private static final int LESS_LENGHT = 6;
     private static final int MAX_LENGHT = 25;
@@ -105,14 +105,11 @@ public class SignUpController {
     @FXML
     private Button registerBtn;
 
-    //LOGGER
-    private static final Logger LOG = Logger.getLogger(SignUpController.class.getName());
-
     /**
      * Defines which view is going to show up when the application executes.
      *
 
-     * @param stageSignUp the view that will show from the main application.
+     * @param primaryStage the view that will show from the main application.
      */
     public void setStage(Stage primaryStage) {
         stage = primaryStage;
@@ -222,22 +219,22 @@ public class SignUpController {
         Matcher matcher = espChar.matcher(fullNameTxt.getText().trim());
         //este codigo solo se ejecuta cuando se pierde el Foco
         if (oldValue) {
-            LOGGER.info("focus lost of  fullNameTxt");
+            LOG.info("focus lost of  fullNameTxt");
             if (matcher.find()) {
                 System.out.println("INCUMPLE" + matcher.find());
-                LOGGER.info("SI NO encuentra");
+                LOG.info("SI NO encuentra");
                 fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
                 fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
 
             } else {
-                LOGGER.info("SI encuentra");
+                LOG.info("SI encuentra");
                 System.out.println("CUMLE" + matcher.find());
                 fullNameErrorLbl.setText(" ");
                 fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
 
             }
         } else if (newValue) {
-            LOGGER.info("Focus gained on fullNameTxt");
+            LOG.info("Focus gained on fullNameTxt");
         }
     }
     /**
@@ -249,7 +246,7 @@ public class SignUpController {
      */
     private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (oldValue) {
-             LOGGER.info("Focus Lost on fullNameTxt");
+             LOG.info("Focus Lost on fullNameTxt");
             List<String> validDomains = Arrays.asList("gmail.com", "yahoo.com", "hotmail.com","gmail.eus");
             if (!(validDomains.contains(emailTxt.getText().substring(emailTxt.getText().indexOf("@") + 1)))) {
                 emailErrorLbl.setText("ERROR domain not valid");
@@ -259,15 +256,16 @@ public class SignUpController {
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
             }
         } else if (newValue) {
-            LOGGER.info("Focus gained on fullNameTxt");
+            LOG.info("Focus gained on fullNameTxt");
         }
+    }
 // final parte aritz
-     *
+     /**
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void focusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
         if (newValue) {
             LOG.info("el foco esta en campo password");
@@ -419,7 +417,6 @@ public class SignUpController {
      * @return
      */
     private void clickHyperlink(ActionEvent HyperLinkPress) {
-        LOG.info("click hyperlink");
         try {
             LOG.info("SignUp Hyper Link Pressed");
             startSignInWindow(stage);
@@ -429,13 +426,20 @@ public class SignUpController {
     }
 
     private void startSignInWindow(Stage primaryStage) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("signupsigninclient/view/SignIn.fxml"));
-        Parent root = (Parent) loader.load();
-
-        //  UISignInController controller = ((UISignInController) loader.getController());
-        //controller.setStage(primaryStage);
-        //7controller.initStage(root);
+        try{
+            LOG.info("Starting SignIn window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            Parent root = (Parent)loader.load();
+            //Get controller
+            SignInController signinController = ((SignInController)loader.getController()); 
+            //Set the stage
+            signinController.setStage(primaryStage);
+            //initialize the window
+            signinController.initStage(root);
+        }catch(IOException ex){
+            LOG.log(Level.SEVERE, "Error Starting SignIn window", ex);
+        }
     }
 
     /**

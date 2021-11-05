@@ -38,13 +38,14 @@ public class SignableImplement implements Signable{
            msg.setUser(user);
            msg.setAccion(Accion.SIGNIN);
            
-           serverConnection(msg);
+           user = serverConnection(msg);
            
         }catch(ConnectionException ex){
             LOG.log(Level.SEVERE, "An error occurred in SignIn process", ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
         }  
+
         return user;
     }
 
@@ -73,15 +74,17 @@ public class SignableImplement implements Signable{
      * Connect with the server project sending a user object and the type of request (SignIn or SignUp)
      * 
      * @param message the message class contains the user and the request type
+     * @return 
      * @throws exceptions.ConnectionException an error message shows if the connection failed
      * @throws java.lang.ClassNotFoundException
      */
-    public void serverConnection(Message message) throws ConnectionException, ClassNotFoundException{
+    public User serverConnection(Message message) throws ConnectionException, ClassNotFoundException{
         //local host, data can be change in the configuration file (config.properties)
         final int PORT = Integer.parseInt(ResourceBundle.getBundle("signupsigninclient.file/config").getString("PORT"));
         final String SERVER = ResourceBundle.getBundle("signupsigninclient.file/config").getString("SERVER");
         ObjectInputStream inO;
         ObjectOutputStream outO;
+        Message mes = null;
         try{
             LOG.info("Initializing Client...");
             try{
@@ -101,11 +104,13 @@ public class SignableImplement implements Signable{
                 
                 //Receive message
                 inO = new ObjectInputStream(clientSc.getInputStream()); //Recibir mensaje
-                message = (Message) inO.readObject();
+                mes = (Message) inO.readObject();
+                
+                LOG.info("MESSAGED RECEIVED In SignableImplement"+mes.getUser().getFullName()+" "+mes.getAccion().toString());
 
                 //Close
-                outO.close();
                 inO.close();
+                outO.close();
             }catch(IOException ex){
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -117,6 +122,7 @@ public class SignableImplement implements Signable{
         }catch(NumberFormatException ex){
            LOG.log(Level.SEVERE, "An error occurred in serverConnection", ex);
         }  
+        return mes.getUser();
     }
     
 }

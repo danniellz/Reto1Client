@@ -112,22 +112,23 @@ public class SignInController {
                 user.setPassword(password);
                 Signable sign = new SignableFactory().getSignable();
                 
-                sign.signIn(user);
+                user = sign.signIn(user);
                 
-                /*try{
+                try{
                     LOG.info("Starting LogOut Window...");
                     //Load the FXML file
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("view/LogOut.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/LogOut.fxml"));
                     Parent root = (Parent)loader.load();
                     //Get controller
                     LogOutController logOutController = ((LogOutController)loader.getController()); 
                     //Set the stage
-                    logOutController.setStage(logOutStage);
+                    logOutController.setStage(stage);
                     //initialize the window
-                    logOutController.initStage(root, user);
+                    logOutController.initStage(root);
+                    logOutController.initData(user);
                 }catch(IOException ex){
                     LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
-                }*/
+                }
             }
         }catch(Exception ex){
             LOG.log(Level.SEVERE, "Login Button Error", ex);
@@ -183,7 +184,7 @@ public class SignInController {
      * @throws IOException Throws an error if the SignUp window fails to open
      */
     private void startSignUpWindow() throws IOException{
-        /*try{
+        try{
             LOG.info("Starting SignUp Window...");
             //Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignUp.fxml"));
@@ -196,7 +197,7 @@ public class SignInController {
             signUpController.initStage(root);
         }catch(IOException ex){
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
-        }*/
+        }
     }
     
     /**
