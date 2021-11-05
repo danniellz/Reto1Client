@@ -55,7 +55,7 @@ public class SignableImplement implements Signable{
      * @param user the user object containing the user data
      */
     @Override
-    public void signUp(User user) {
+    public User signUp(User user) {
         try{
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
             Message msg = new Message();
@@ -68,6 +68,7 @@ public class SignableImplement implements Signable{
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
         }  
+        return user;
     }
 
     /**

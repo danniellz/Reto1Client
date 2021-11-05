@@ -5,6 +5,12 @@
  */
 package signupsigninclient.controller;
 
+import exceptions.ConnectionException;
+import exceptions.DatabaseNotFoundException;
+import exceptions.IncorrectPasswordException;
+import exceptions.InvalidEmailFormatException;
+import exceptions.UserAlreadyExistException;
+import exceptions.UserNotFoundException;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -39,6 +45,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.WindowEvent;
+import signable.Signable;
+import signupsigninclient.logic.SignableFactory;
+import user.User;
 
 /**
  * FXML Controller class the view SingUp
@@ -394,7 +403,7 @@ public class SignUpController {
      *
      * @param event determines which event has happened.
      */
-    private void registerValidation(ActionEvent event) {
+    private void registerValidation(ActionEvent event){
         LOG.info("Click button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
@@ -405,7 +414,34 @@ public class SignUpController {
             alert.setTitle("Info");
             alert.setContentText("ERROR PASSWORS IN CORRECT");
             alert.showAndWait();
-            //    openSignInWindow();
+              
+        }else{
+             
+             User user = new User();
+             user.setLogin(userTxt.getText());
+             user.setEmail(emailTxt.getText());
+             user.setFullName(fullNameTxt.getText());
+             user.setPassword(passwordTxt.getText());
+            try { 
+            Signable sign = new SignableFactory().getSignable();
+            sign.signUp(user);
+            
+             openSignInWindow();
+            } catch (UserAlreadyExistException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UserNotFoundException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (DatabaseNotFoundException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ConnectionException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IncorrectPasswordException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidEmailFormatException ex) {
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+             
         }
 
     }
@@ -453,7 +489,7 @@ public class SignUpController {
         LOG.info("close program");
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Close Program");
-        alert.setHeaderText("Do you really want to Log Out?");
+        alert.setHeaderText("Do you really want to Exit?");
         Optional<ButtonType> resp = alert.showAndWait();
         if (resp.get() == ButtonType.OK) {
             Platform.exit();
@@ -475,6 +511,24 @@ public class SignUpController {
         alert.setContentText("¿Deseas realmente confirmar?");
         alert.showAndWait();
 
+    }
+
+    private void openSignInWindow() {
+        try{
+                    LOG.info("Starting LogIn Window...");
+                    //Load the FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+                    Parent root = (Parent)loader.load();
+                    //Get controller
+                    SignInController signIn = ((SignInController)loader.getController()); 
+                    //Set the stage
+                    signIn.setStage(stage);
+                    //initialize the window
+                    signIn.initStage(root);
+                  
+                }catch(IOException ex){
+                    LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
+                }
     }
 
 }
