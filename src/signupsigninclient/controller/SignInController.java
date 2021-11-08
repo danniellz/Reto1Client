@@ -1,5 +1,10 @@
 package signupsigninclient.controller;
 
+import exceptions.ConnectionException;
+import exceptions.DatabaseNotFoundException;
+import exceptions.MaxConnectionException;
+import exceptions.UserAlreadyExistException;
+import exceptions.UserPasswordException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -25,12 +30,13 @@ import signupsigninclient.logic.SignableFactory;
 import user.User;
 
 /**
- * SignIn window controller class 
- * 
+ * SignIn window controller class
+ *
  * @author Daniel Brizuela
  * @version 1.0
  */
 public class SignInController {
+
     //Attributes, @FXML allows interaction with controls from the FXML file
     private Stage stage;
     @FXML
@@ -44,29 +50,29 @@ public class SignInController {
     @FXML
     private Label errorLbl;
     private String username, password;
-    
+
     //LOGGER
     private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
-    
+
     /**
      * Set the primary stage
-     * 
+     *
      * @param primaryStage contains the stage value
      */
     public void setStage(Stage primaryStage) {
         this.stage = primaryStage;
     }
-    
+
     /**
      * Initialize the window
-     * 
+     *
      * @param root Parent value containing the FXML
      */
     public void initStage(Parent root) {
-        try{
+        try {
             LOG.info("Initializing stage...");
             //Creates a new Scene
-            Scene scene = new Scene (root);
+            Scene scene = new Scene(root);
             //Associate the scene to window(stage)
             stage.setScene(scene);
             //Window properties
@@ -83,65 +89,82 @@ public class SignInController {
             errorLbl.setStyle("-fx-text-fill: red");
             //ventana asincrona
             stage.show();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Stage init error", ex);
         }
-        
+
     }
-    
+
     //Pressing the login button
     /**
-     * Calling this method the SignIn action will be executed to grant access to the app (LogOut window)
-     * 
+     * Calling this method the SignIn action will be executed to grant access to
+     * the app (LogOut window)
+     *
      * @param buttonPress Action event at pressing the login button
      */
-    private void handleButtonLogin(ActionEvent buttonPress){
+    private void handleButtonLogin(ActionEvent buttonPress) {
         username = userTxt.getText();
         password = passwordTxt.getText();
-        try{
+        try {
             LOG.info("Login Button Pressed");
             //if the user or password fields are empty, throw a message
-            if((username.equals("") || password.equals("")) || 
-               (username.equals("") && password.equals(""))){
+            if ((username.equals("") || password.equals(""))
+                    || (username.equals("") && password.equals(""))) {
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
-            }else{
+            } else {
                 LOG.info("Proccesing user info...");
                 User user = new User();
                 user.setLogin(username);
                 user.setPassword(password);
                 Signable sign = new SignableFactory().getSignable();
-                
+
                 user = sign.signIn(user);
-                
-                try{
+
+                try {
                     LOG.info("Starting LogOut Window...");
                     //Load the FXML file
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/LogOut.fxml"));
-                    Parent root = (Parent)loader.load();
+                    Parent root = (Parent) loader.load();
                     //Get controller
-                    LogOutController logOutController = ((LogOutController)loader.getController()); 
+                    LogOutController logOutController = ((LogOutController) loader.getController());
                     //Set the stage
                     logOutController.setStage(stage);
                     //initialize the window
                     logOutController.initStage(root);
                     logOutController.initData(user);
-                }catch(IOException ex){
+                } catch (IOException ex) {
                     LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
                 }
             }
-        }catch(Exception ex){
+        } catch (UserPasswordException ex) {
+            errorLbl.setVisible(true);
+        } catch (ConnectionException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Server Connection Error");
+            alert.setContentText("Server is not available, please, try again later");
+            alert.showAndWait();
+        }catch(MaxConnectionException ex){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Max Connection Reached");
+            alert.setContentText("The Server is not available because the limit connection has been reached, please try again later");
+            alert.showAndWait();    
+        } catch (DatabaseNotFoundException | UserAlreadyExistException ex) {
             LOG.log(Level.SEVERE, "Login Button Error", ex);
-        }  
+        }
+
     }
 
     /**
-     * Calling this method will close the app (EJ: Pressing the window exit button)
-     * 
+     * Calling this method will close the app (EJ: Pressing the window exit
+     * button)
+     *
      * @param closeEvent A window event
      */
-    private void handleCloseRequest(WindowEvent closeEvent){
-        try{
+    private void handleCloseRequest(WindowEvent closeEvent) {
+        try {
             LOG.info("Confirm Closing");
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("¿Are you sure you want to exit?");
@@ -150,103 +173,101 @@ public class SignInController {
             if (option.get() == ButtonType.OK) {
                 LOG.info("Closing...");
                 Platform.exit();
-            }else{
+            } else {
                 LOG.info("Closing Canceled");
                 //Cancel the event process
                 closeEvent.consume();
             }
-            
-        
-            
-        }catch(Exception ex){
+
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Close request error", ex);
-        }  
+        }
     }
 
     /**
      * Calling this method will open the SignUp window
-     * 
+     *
      * @param HyperLinkPress Action event at pressing the HyperLink
      */
-    private void handleSignUpHyperLink(ActionEvent HyperLinkPress){
-        try{
+    private void handleSignUpHyperLink(ActionEvent HyperLinkPress) {
+        try {
             LOG.info("SignUp Hyper Link Pressed");
             startSignUpWindow();
-        }catch(IOException ex){
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "HyperLink Error", ex);
-        }  
+        }
     }
-    
+
     /**
      * Open the SignUp window
-     * 
+     *
      * @param primaryStage stage object (window)
      * @throws IOException Throws an error if the SignUp window fails to open
      */
-    private void startSignUpWindow() throws IOException{
-        try{
+    private void startSignUpWindow() throws IOException {
+        try {
             LOG.info("Starting SignUp Window...");
             //Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignUp.fxml"));
-            Parent root = (Parent)loader.load();
+            Parent root = (Parent) loader.load();
             //Get controller
-            SignUpController signUpController = ((SignUpController)loader.getController()); 
+            SignUpController signUpController = ((SignUpController) loader.getController());
             //Set the stage
             signUpController.setStage(stage);
             //initialize the window
             signUpController.initStage(root);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
         }
     }
-    
+
     /**
      * Calling this method sets the user field controls (textProperty())
-     * 
+     *
      * @param observable targeted field whose value changed
      * @param oldValue previous value before change
      * @param newValue last value typed
      */
-    private void handleUserControl(ObservableValue<? extends String> observable, String oldValue, String newValue){
-        try{
+    private void handleUserControl(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        try {
             //if a 26 character its typed, take first character to 25 and set it to the field
-            if(userTxt.getText().length() > 25){
+            if (userTxt.getText().length() > 25) {
                 userTxt.setText(userTxt.getText().substring(0, 25));
                 LOG.info("25 character limit reached in user");
             }
             //Control empty spaces
-            if(userTxt.getText().contains(" ")){
-                 userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+            if (userTxt.getText().contains(" ")) {
+                userTxt.setText(userTxt.getText().replaceAll(" ", ""));
             }
             //Show error label
-             errorLbl.setVisible(false);
-        }catch(Exception ex){
+            errorLbl.setVisible(false);
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting User field control", ex);
-        }  
+        }
     }
-    
+
     /**
      * Calling this method sets the password field controls (textProperty())
-     * 
+     *
      * @param observable targeted field whose value changed
      * @param oldValue previous value before change
      * @param newValue last value type
      */
-    private void handlePasswordControl(ObservableValue<? extends String> observable, String oldValue, String newValue){
-        try{
+    private void handlePasswordControl(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        try {
             //if a 26 character its typed, take first character to 25 and set it to the field
-            if(passwordTxt.getText().length() > 25){
+            if (passwordTxt.getText().length() > 25) {
                 passwordTxt.setText(passwordTxt.getText().substring(0, 25));
                 LOG.info("25 character limit reached in password");
             }
             //Control empty spaces
-            if(passwordTxt.getText().contains(" ")){
+            if (passwordTxt.getText().contains(" ")) {
                 passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
             }
             //Show error label
             errorLbl.setVisible(false);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting Password field control", ex);
-        }  
+        }
     }
 }
