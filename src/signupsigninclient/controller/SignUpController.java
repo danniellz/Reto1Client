@@ -133,14 +133,19 @@ public class SignUpController {
     public void initStage(Parent root) {
 
         LOG.info("Initializing stage...");
-
-
+        
+        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
-
-        //  stage.setOnShowing(this::handleWindowShowing);
+        
+        userErrorLbl.setVisible(false);
+        fullNameErrorLbl.setVisible(false);
+        emailErrorLbl.setVisible(false);
+        passwordErrorLbl.setVisible(false);
+        repeatPasswordErrorLbl.setVisible(false);
+        
         charlimit();
         fullNameTxt.focusedProperty().addListener(this::focusLostEspChar);
         emailTxt.focusedProperty().addListener(this::domainControl);
@@ -164,21 +169,24 @@ public class SignUpController {
      * textLabel)
      */
     private void charlimit() {
+       
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> ov, String t, String t1) {
                 if (userTxt.getText().length() > 25) {
                     userTxt.deletePreviousChar();
                     userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
-                    userErrorLbl.setText("25 characters limit reached");
+                    userErrorLbl.setVisible(true);
                     userErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                   
                 } else {
+                   
                     userTxt.setStyle("-fx-border-color: White;");
-                    userErrorLbl.setText(" ");
+                    userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
                 }
             }
-
+         
         });
         fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -186,11 +194,11 @@ public class SignUpController {
                 if (fullNameTxt.getText().length() > 25) {
                     fullNameTxt.deletePreviousChar();
                     fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
-                    fullNameErrorLbl.setText("25 characters limit reached");
+                    fullNameErrorLbl.setVisible(true);
                     fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
                 } else {
-                    emailErrorLbl.setText(" ");
-                    emailErrorLbl.setStyle(" ");
+                    fullNameErrorLbl.setVisible(false);
+                    fullNameErrorLbl.setStyle("");
                 }
             }
         });
@@ -199,16 +207,18 @@ public class SignUpController {
             public void changed(ObservableValue<? extends String> ov, String t, String t1) {
                 if (emailTxt.getText().length() > 50) {
                     emailTxt.deletePreviousChar();
+                    emailErrorLbl.setVisible(true);
                     emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
-                    emailErrorLbl.setText("50 characters limit reached");
+                    emailErrorLbl.setVisible(true);
                     emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
                 } else {
-                    emailErrorLbl.setText(" ");
-                    emailErrorLbl.setStyle(" ");
+                    emailErrorLbl.setVisible(false);
+                    emailErrorLbl.setStyle("");
                 }
 
             }
         });
+       
 
     }
 
@@ -232,14 +242,14 @@ public class SignUpController {
             if (matcher.find()) {
                 System.out.println("INCUMPLE" + matcher.find());
                 LOG.info("SI NO encuentra");
-                fullNameErrorLbl.setText(" Numbers or special characters are not allowed ");
-                fullNameErrorLbl.setStyle("-fx-border-color: #DC143C;");
+               
+                fullNameErrorLbl.setVisible(true);
+                fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
             } else {
                 LOG.info("SI encuentra");
                 System.out.println("CUMLE" + matcher.find());
-                fullNameErrorLbl.setText(" ");
-                fullNameErrorLbl.setStyle("-fx-border-color: WHITE;");
+                fullNameErrorLbl.setVisible(false);
 
             }
         } else if (newValue) {
@@ -256,13 +266,19 @@ public class SignUpController {
     private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (oldValue) {
              LOG.info("Focus Lost on fullNameTxt");
-            List<String> validDomains = Arrays.asList("gmail.com", "yahoo.com", "hotmail.com","gmail.eus");
-            if (!(validDomains.contains(emailTxt.getText().substring(emailTxt.getText().indexOf("@") + 1)))) {
-                emailErrorLbl.setText("ERROR domain not valid");
-                emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
-            } else {
-                emailErrorLbl.setText(" ");
+             
+          
+         
+             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
+             if (matcher.find()) {
+                emailErrorLbl.setVisible(false);
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
+              
+            } else {
+                emailErrorLbl.setText("ERROR domain not valid");
+                emailErrorLbl.setVisible(true);
+                emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
+               
             }
         } else if (newValue) {
             LOG.info("Focus gained on fullNameTxt");
@@ -285,10 +301,10 @@ public class SignUpController {
             if (passwordTxt.getText().length() < LESS_LENGHT) {
                 String password = passwordTxt.getText();
                 passwordTxt.setText(password);
-                passwordErrorLbl.setText("Minimum of 6 characters required");
+                passwordErrorLbl.setVisible(true);
                 passwordErrorLbl.setTextFill(Color.web("#ff0000"));
             } else {
-                passwordErrorLbl.setText("");
+                passwordErrorLbl.setVisible(false);
             }
         }
     }
@@ -307,11 +323,11 @@ public class SignUpController {
         } else if (oldValue) {
             LOG.info("el foco salido del campo repeatPassword");
             if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
-                repeatPasswordErrorLbl.setText("Passwords don't match");
+                repeatPasswordErrorLbl.setVisible(true);
                 repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
             } else {
-                repeatPasswordErrorLbl.setText("");
+                repeatPasswordErrorLbl.setVisible(false);
             }
         }
     }
@@ -333,11 +349,12 @@ public class SignUpController {
             passwordTxt.setText(password);
 
             passwordErrorLbl.setText("Password must be less than 50 character");
+            passwordErrorLbl.setVisible(true);     
             passwordErrorLbl.setTextFill(Color.web("#ff0000"));
         }
         if (MAX_LENGHT < passwordTxt.getText().length()) {
             LOG.info("Campo informado valido");
-            passwordErrorLbl.setText("");
+            passwordErrorLbl.setVisible(false);
         }
 
     }
@@ -395,9 +412,17 @@ public class SignUpController {
                         .or(emailTxt.textProperty().isEmpty())
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
+                        //errorLbl
+                      
+                        .or(userErrorLbl.visibleProperty())
+                        .or(fullNameErrorLbl.visibleProperty())
+                        .or(emailErrorLbl.visibleProperty())
+                        .or(passwordErrorLbl.visibleProperty())
+                        .or(repeatPasswordErrorLbl.visibleProperty())
+                        
         );
+         
     }
-
     /**
      * Executes action when Sign Up button pressed.
      *
@@ -408,14 +433,9 @@ public class SignUpController {
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
 
-        if (errorPassEqual) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setTitle("Info");
-            alert.setContentText("ERROR PASSWORS IN CORRECT");
-            alert.showAndWait();
+       
               
-        }else{
+       
              
              User user = new User();
              user.setLogin(userTxt.getText());
@@ -426,23 +446,24 @@ public class SignUpController {
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
             
-             openSignInWindow();
+            openSignInWindow();
             } catch (UserAlreadyExistException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
+                
             } catch (UserNotFoundException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
             } catch (DatabaseNotFoundException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
             } catch (ConnectionException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
             } catch (IncorrectPasswordException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorret password check the password Textlabels", ex);
             } catch (InvalidEmailFormatException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Invalid Domain in the email Label", ex);
             }
             
              
-        }
+        
 
     }
 
