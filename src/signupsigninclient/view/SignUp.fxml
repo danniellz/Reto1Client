@@ -72,13 +72,13 @@
                 <Font name="System Bold" size="12.0" />
             </font>
         </Button>
-        <Label fx:id="userErrorLbl" layoutX="160.0" layoutY="111.0" prefHeight="17.0" prefWidth="294.0" />
-        <Label fx:id="fullNameErrorLbl" layoutX="160.0" layoutY="153.0" prefHeight="17.0" prefWidth="294.0" />
-        <Label fx:id="emailErrorLbl" layoutX="160.0" layoutY="195.0" prefHeight="17.0" prefWidth="294.0" />
+        <Label fx:id="userErrorLbl" layoutX="160.0" layoutY="111.0" text ="25 characters limit reached" prefHeight="17.0" prefWidth="294.0" />
+        <Label fx:id="fullNameErrorLbl" layoutX="160.0" layoutY="153.0" text =" Numbers or special characters are not allowed " prefHeight="17.0" prefWidth="294.0" />
+        <Label fx:id="emailErrorLbl" layoutX="160.0" layoutY="195.0" text ="50 characters limit reached" prefHeight="17.0" prefWidth="294.0" />
 
-        <Label fx:id="passwordErrorLbl" layoutX="160.0" layoutY="235.0" prefHeight="17.0" prefWidth="294.0" />
+        <Label fx:id="passwordErrorLbl" layoutX="160.0" layoutY="235.0" text ="Minimum of 6 characters required" prefHeight="17.0" prefWidth="294.0" />
 
-        <Label fx:id="repeatPasswordErrorLbl" layoutX="160.0" layoutY="279.0" prefHeight="17.0" prefWidth="294.0" />
+        <Label fx:id="repeatPasswordErrorLbl" layoutX="160.0" text ="Passwords don't match " layoutY="279.0" prefHeight="17.0" prefWidth="294.0" />
     </children>
     <opaqueInsets>
         <Insets />

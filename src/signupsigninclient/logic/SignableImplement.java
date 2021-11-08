@@ -67,8 +67,11 @@ public class SignableImplement implements Signable {
      * @throws exceptions.MaxConnectionException
      */
     @Override
+
+
     public void signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
+
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
             Message msg = new Message();
             msg.setUser(user);
@@ -78,7 +81,9 @@ public class SignableImplement implements Signable {
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
+
         }
+
     }
 
     /**
