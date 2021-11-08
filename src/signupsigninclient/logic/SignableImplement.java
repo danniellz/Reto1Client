@@ -65,11 +65,10 @@ public class SignableImplement implements Signable {
      * @throws exceptions.DatabaseNotFoundException
      * @throws exceptions.ConnectionException
      * @throws exceptions.MaxConnectionException
+     * @return
      */
     @Override
-
-
-    public void signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+    public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
 
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
@@ -77,12 +76,13 @@ public class SignableImplement implements Signable {
             msg.setUser(user);
             msg.setAccion(Accion.SIGNUP);
 
-            serverConnection(msg);
+            user = serverConnection(msg);
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
 
         }
+        return user;
 
     }
 
@@ -91,7 +91,8 @@ public class SignableImplement implements Signable {
      * request (SignIn or SignUp)
      *
      * @param message the message class contains the user and the request type
-     * @throws exceptions.ConnectionException an error message shows if the connection failed
+     * @throws exceptions.ConnectionException an error message shows if the
+     * connection failed
      * @throws exceptions.UserPasswordException
      * @throws exceptions.UserAlreadyExistException
      * @throws exceptions.DatabaseNotFoundException

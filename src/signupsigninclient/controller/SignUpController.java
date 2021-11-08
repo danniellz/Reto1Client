@@ -1,23 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsigninclient.controller;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
-import exceptions.IncorrectPasswordException;
-import exceptions.InvalidEmailFormatException;
+import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserNotFoundException;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import java.beans.EventHandler;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import exceptions.UserPasswordException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -31,9 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -55,6 +39,7 @@ import user.User;
  * @author Jonathan Viñan , Aritz Arrieta
  */
 public class SignUpController {
+
     private static final Logger LOG = Logger.getLogger(SignUpController.class.getName());
 
     private static final int LESS_LENGHT = 6;
@@ -117,7 +102,7 @@ public class SignUpController {
     /**
      * Defines which view is going to show up when the application executes.
      *
-
+     *
      * @param primaryStage the view that will show from the main application.
      */
     public void setStage(Stage primaryStage) {
@@ -133,19 +118,18 @@ public class SignUpController {
     public void initStage(Parent root) {
 
         LOG.info("Initializing stage...");
-        
-        
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
-        
+
         userErrorLbl.setVisible(false);
         fullNameErrorLbl.setVisible(false);
         emailErrorLbl.setVisible(false);
         passwordErrorLbl.setVisible(false);
         repeatPasswordErrorLbl.setVisible(false);
-        
+
         charlimit();
         fullNameTxt.focusedProperty().addListener(this::focusLostEspChar);
         emailTxt.focusedProperty().addListener(this::domainControl);
@@ -159,17 +143,15 @@ public class SignUpController {
         passwordTxt.focusedProperty().addListener(this::focusChanged);
         repeatPasswordTxt.focusedProperty().addListener(this::focusChangeRepeatPassword);
 
-
         stage.show();
     }
 
     /**
-      *+*************Start ARITZ****************************
-     * this method puts a limit in the textLabels (25 limit except email
-     * textLabel)
+     * +*************Start ARITZ**************************** this method puts a
+     * limit in the textLabels (25 limit except email textLabel)
      */
     private void charlimit() {
-       
+
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> ov, String t, String t1) {
@@ -178,15 +160,15 @@ public class SignUpController {
                     userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
                     userErrorLbl.setVisible(true);
                     userErrorLbl.setStyle("-fx-text-fill: #DC143C");
-                   
+
                 } else {
-                   
+
                     userTxt.setStyle("-fx-border-color: White;");
                     userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
                 }
             }
-         
+
         });
         fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -218,7 +200,6 @@ public class SignUpController {
 
             }
         });
-       
 
     }
 
@@ -242,7 +223,7 @@ public class SignUpController {
             if (matcher.find()) {
                 System.out.println("INCUMPLE" + matcher.find());
                 LOG.info("SI NO encuentra");
-               
+
                 fullNameErrorLbl.setVisible(true);
                 fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
@@ -256,36 +237,36 @@ public class SignUpController {
             LOG.info("Focus gained on fullNameTxt");
         }
     }
+
     /**
-     * domain control checks from "@" if domain of email is valid 
-     * 
+     * domain control checks from "@" if domain of email is valid
+     *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
      * @param newValue is a boolean to know where is the focus
      */
     private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (oldValue) {
-             LOG.info("Focus Lost on fullNameTxt");
-             
-          
-         
-             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
-             if (matcher.find()) {
+            LOG.info("Focus Lost on fullNameTxt");
+
+            Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
+            if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
-              
+
             } else {
                 emailErrorLbl.setText("ERROR domain not valid");
                 emailErrorLbl.setVisible(true);
                 emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
-               
+
             }
         } else if (newValue) {
             LOG.info("Focus gained on fullNameTxt");
         }
     }
 // final parte aritz
-     /**
+
+    /**
      * @param observable
      * @param oldValue
      * @param newValue
@@ -349,7 +330,7 @@ public class SignUpController {
             passwordTxt.setText(password);
 
             passwordErrorLbl.setText("Password must be less than 50 character");
-            passwordErrorLbl.setVisible(true);     
+            passwordErrorLbl.setVisible(true);
             passwordErrorLbl.setTextFill(Color.web("#ff0000"));
         }
         if (MAX_LENGHT < passwordTxt.getText().length()) {
@@ -386,7 +367,7 @@ public class SignUpController {
         boolean error = false;
 
         if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
-           LOG.info("error de contraseñas");
+            LOG.info("error de contraseñas");
             repeatPasswordErrorLbl.setText("Passwords don't match");
             repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
@@ -413,57 +394,48 @@ public class SignUpController {
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
                         //errorLbl
-                      
+
                         .or(userErrorLbl.visibleProperty())
                         .or(fullNameErrorLbl.visibleProperty())
                         .or(emailErrorLbl.visibleProperty())
                         .or(passwordErrorLbl.visibleProperty())
                         .or(repeatPasswordErrorLbl.visibleProperty())
-                        
         );
-         
+
     }
+
     /**
      * Executes action when Sign Up button pressed.
      *
      * @param event determines which event has happened.
      */
-    private void registerValidation(ActionEvent event){
+    private void registerValidation(ActionEvent event) {
         LOG.info("Click button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
 
-       
-              
-       
-             
-             User user = new User();
-             user.setLogin(userTxt.getText());
-             user.setEmail(emailTxt.getText());
-             user.setFullName(fullNameTxt.getText());
-             user.setPassword(passwordTxt.getText());
-            try { 
+        User user = new User();
+        user.setLogin(userTxt.getText());
+        user.setEmail(emailTxt.getText());
+        user.setFullName(fullNameTxt.getText());
+        user.setPassword(passwordTxt.getText());
+        try {
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
-            
+
             openSignInWindow();
-            } catch (UserAlreadyExistException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
-                
-            } catch (UserNotFoundException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
-            } catch (DatabaseNotFoundException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
-            } catch (ConnectionException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
-            } catch (IncorrectPasswordException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorret password check the password Textlabels", ex);
-            } catch (InvalidEmailFormatException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Invalid Domain in the email Label", ex);
-            }
-            
-             
-        
+
+        } catch (UserAlreadyExistException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
+        } catch (UserPasswordException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
+        } catch (DatabaseNotFoundException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
+        } catch (ConnectionException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
+        } catch (MaxConnectionException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Max Connection reached", ex);
+        }
 
     }
 
@@ -483,18 +455,18 @@ public class SignUpController {
     }
 
     private void startSignInWindow(Stage primaryStage) throws IOException {
-        try{
+        try {
             LOG.info("Starting SignIn window...");
             //Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
-            Parent root = (Parent)loader.load();
+            Parent root = (Parent) loader.load();
             //Get controller
-            SignInController signinController = ((SignInController)loader.getController()); 
+            SignInController signinController = ((SignInController) loader.getController());
             //Set the stage
             signinController.setStage(primaryStage);
             //initialize the window
             signinController.initStage(root);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Error Starting SignIn window", ex);
         }
     }
@@ -514,7 +486,7 @@ public class SignUpController {
         Optional<ButtonType> resp = alert.showAndWait();
         if (resp.get() == ButtonType.OK) {
             Platform.exit();
-        }else{
+        } else {
             e.consume();
         }
     }
@@ -535,21 +507,21 @@ public class SignUpController {
     }
 
     private void openSignInWindow() {
-        try{
-                    LOG.info("Starting LogIn Window...");
-                    //Load the FXML file
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
-                    Parent root = (Parent)loader.load();
-                    //Get controller
-                    SignInController signIn = ((SignInController)loader.getController()); 
-                    //Set the stage
-                    signIn.setStage(stage);
-                    //initialize the window
-                    signIn.initStage(root);
-                  
-                }catch(IOException ex){
-                    LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
-                }
+        try {
+            LOG.info("Starting LogIn Window...");
+            //Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            Parent root = (Parent) loader.load();
+            //Get controller
+            SignInController signIn = ((SignInController) loader.getController());
+            //Set the stage
+            signIn.setStage(stage);
+            //initialize the window
+            signIn.initStage(root);
+
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
+        }
     }
 
 }
