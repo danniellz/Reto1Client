@@ -1,6 +1,10 @@
 package signupsigninclient.logic;
 
 import exceptions.ConnectionException;
+import exceptions.DatabaseNotFoundException;
+import exceptions.MaxConnectionException;
+import exceptions.UserAlreadyExistException;
+import exceptions.UserPasswordException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -8,121 +12,146 @@ import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Alert;
 import message.Accion;
 import message.Message;
 import signable.Signable;
 import user.User;
 
 /**
- * Class that implements the Signable Interface to request a SignIn or SingUp and connect with a server project
- * 
+ * Class that implements the Signable Interface to request a SignIn or SingUp
+ * and connect with a server project
+ *
  * @author Daniel Brizuela
  * @version 1.0
  */
-public class SignableImplement implements Signable{
-    Alert alert;
+public class SignableImplement implements Signable {
+
     //LOGGER
     private static final Logger LOG = Logger.getLogger(SignableImplement.class.getName());
+
     /**
      * Request a Sign In
-     * 
+     *
      * @param user the user object containing the user data
-     * @return 
+     * @throws exceptions.UserPasswordException
+     * @throws exceptions.UserAlreadyExistException
+     * @throws exceptions.DatabaseNotFoundException
+     * @throws exceptions.ConnectionException
+     * @return the User object with all data form DB
      */
     @Override
-    public User signIn(User user) {
-        try{
-           LOG.log(Level.INFO, "Starting SignIn Process for {0}...", user.getLogin());
-           Message msg = new Message();
-           msg.setUser(user);
-           msg.setAccion(Accion.SIGNIN);
-           
-           user = serverConnection(msg);
-           
-        }catch(ConnectionException ex){
-            LOG.log(Level.SEVERE, "An error occurred in SignIn process", ex);
+    public User signIn(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+        try {
+            LOG.log(Level.INFO, "Starting SignIn Process for {0}...", user.getLogin());
+            Message msg = new Message();
+            msg.setUser(user);
+            msg.setAccion(Accion.SIGNIN);
+
+            user = serverConnection(msg);
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
 
         return user;
     }
 
     /**
      * Request a Sign Up
-     * 
+     *
      * @param user the user object containing the user data
+     * @throws exceptions.UserPasswordException
+     * @throws exceptions.UserAlreadyExistException
+     * @throws exceptions.DatabaseNotFoundException
+     * @throws exceptions.ConnectionException
+     * @throws exceptions.MaxConnectionException
      */
     @Override
-    public void signUp(User user) {
-        try{
+    public void signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+        try {
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
             Message msg = new Message();
             msg.setUser(user);
             msg.setAccion(Accion.SIGNUP);
-            
+
             serverConnection(msg);
-        }catch(ConnectionException ex){
-            LOG.log(Level.SEVERE, "An error occurred in SignUp process", ex);
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
     }
 
     /**
-     * Connect with the server project sending a user object and the type of request (SignIn or SignUp)
-     * 
+     * Connect with the server project sending a user object and the type of
+     * request (SignIn or SignUp)
+     *
      * @param message the message class contains the user and the request type
-     * @return 
      * @throws exceptions.ConnectionException an error message shows if the connection failed
+     * @throws exceptions.UserPasswordException
+     * @throws exceptions.UserAlreadyExistException
+     * @throws exceptions.DatabaseNotFoundException
+     * @throws exceptions.MaxConnectionException
      * @throws java.lang.ClassNotFoundException
+     * @return A message with the User object containing the data from DB
      */
-    public User serverConnection(Message message) throws ConnectionException, ClassNotFoundException{
+    public User serverConnection(Message message) throws ConnectionException, UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ClassNotFoundException, MaxConnectionException {
         //local host, data can be change in the configuration file (config.properties)
         final int PORT = Integer.parseInt(ResourceBundle.getBundle("signupsigninclient.file/config").getString("PORT"));
         final String SERVER = ResourceBundle.getBundle("signupsigninclient.file/config").getString("SERVER");
         ObjectInputStream inO;
         ObjectOutputStream outO;
         Message mes = null;
-        try{
+        try {
             LOG.info("Initializing Client...");
-            try{
+            try {
                 Socket clientSc = new Socket(SERVER, PORT);
                 LOG.info("Client > Initialized");
                 //Send message
                 outO = new ObjectOutputStream(clientSc.getOutputStream());
                 outO.writeObject(message);
-                
+
                 //Message sent log
-                if(message.getAccion() == Accion.SIGNIN){
+                if (message.getAccion() == Accion.SIGNIN) {
                     LOG.info("Client > SIGN IN REQUEST SENT");
                 }
-                if(message.getAccion() == Accion.SIGNUP){
+                if (message.getAccion() == Accion.SIGNUP) {
                     LOG.info("Client > SIGN UP REQUEST SENT");
                 }
-                
-                //Receive message
-                inO = new ObjectInputStream(clientSc.getInputStream()); //Recibir mensaje
-                mes = (Message) inO.readObject();
-                
-                LOG.info("MESSAGED RECEIVED In SignableImplement"+mes.getUser().getFullName()+" "+mes.getAccion().toString());
 
-                //Close
+                //Receive message
+                inO = new ObjectInputStream(clientSc.getInputStream());
+                mes = (Message) inO.readObject();
+
+                //Receive the Accion message from Server to know how went the process
+                switch (mes.getAccion()) {
+                    case INVALIDUSERORPASSWORD:
+                        throw new UserPasswordException();
+                    case USERALREADYEXIST:
+                        throw new UserAlreadyExistException();
+                    case DATABASENOTFOUND:
+                        throw new DatabaseNotFoundException();
+                    case CONNECTIONNOTFOUND:
+                        throw new ConnectionException();
+                    case MAXCONNECTION:
+                        throw new MaxConnectionException();
+                    case OK:
+                        LOG.info("Process gone Well!");
+                        break;
+                }
+
+                LOG.info("MESSAGED RECEIVED FROM Server For " + mes.getUser().getFullName() + " With Result " + mes.getAccion().toString());
+
+                //Close Channels
                 inO.close();
                 outO.close();
-            }catch(IOException ex){
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Server Connection Error");
-                alert.setContentText("Server is not available, please, try again later");
-                alert.showAndWait();
-                throw new exceptions.ConnectionException();     
-            }      
-        }catch(NumberFormatException ex){
-           LOG.log(Level.SEVERE, "An error occurred in serverConnection", ex);
-        }  
+            } catch (IOException ex) {
+                throw new ConnectionException();
+            }
+        } catch (NumberFormatException ex) {
+            LOG.log(Level.SEVERE, "An error occurred in serverConnection", ex);
+        }
+
         return mes.getUser();
     }
-    
+
 }
