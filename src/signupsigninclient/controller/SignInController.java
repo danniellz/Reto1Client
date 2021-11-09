@@ -37,6 +37,9 @@ import user.User;
  */
 public class SignInController {
 
+    //LOGGER
+    private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
+
     //Attributes, @FXML allows interaction with controls from the FXML file
     private Stage stage;
     @FXML
@@ -50,9 +53,6 @@ public class SignInController {
     @FXML
     private Label errorLbl;
     private String username, password;
-
-    //LOGGER
-    private static final Logger LOG = Logger.getLogger(SignInController.class.getName());
 
     /**
      * Set the primary stage
@@ -112,6 +112,8 @@ public class SignInController {
                     || (username.equals("") && password.equals(""))) {
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
+                userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
+                passwordTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
             } else {
                 LOG.info("Proccesing user info...");
                 User user = new User();
@@ -139,22 +141,30 @@ public class SignInController {
             }
         } catch (UserPasswordException ex) {
             errorLbl.setVisible(true);
+            userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
+            passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
         } catch (ConnectionException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+            alert.setTitle("Connecion Error");
             alert.setHeaderText("Server Connection Error");
             alert.setContentText("Server is not available, please, try again later");
             alert.showAndWait();
-        }catch(MaxConnectionException ex){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+        } catch (MaxConnectionException ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Connection Limit Warning");
             alert.setHeaderText("Max Connection Reached");
             alert.setContentText("The Server is not available because the limit connection has been reached, please try again later");
-            alert.showAndWait();    
-        } catch (DatabaseNotFoundException | UserAlreadyExistException ex) {
+            alert.showAndWait();
+        } catch (DatabaseNotFoundException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Database Connection Error");
+            alert.setContentText("Database is not available, please, try again later");
+            alert.showAndWait();
+        } catch (UserAlreadyExistException ex) {
             LOG.log(Level.SEVERE, "Login Button Error", ex);
-        }
 
+        }
     }
 
     /**
@@ -241,6 +251,8 @@ public class SignInController {
             }
             //Show error label
             errorLbl.setVisible(false);
+            userTxt.setStyle("");
+            passwordTxt.setStyle("");
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting User field control", ex);
         }
@@ -266,6 +278,8 @@ public class SignInController {
             }
             //Show error label
             errorLbl.setVisible(false);
+            userTxt.setStyle("");
+            passwordTxt.setStyle("");
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting Password field control", ex);
         }

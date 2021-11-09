@@ -51,5 +51,4 @@ public class SignUpSignInClient extends Application{
     public static void main(String[] args) {
         launch(args);
     }
-
 }

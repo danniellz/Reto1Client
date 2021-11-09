@@ -33,10 +33,11 @@ public class SignableImplement implements Signable {
      * Request a Sign In
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException
-     * @throws exceptions.UserAlreadyExistException
-     * @throws exceptions.DatabaseNotFoundException
-     * @throws exceptions.ConnectionException
+     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
+     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
      * @return the User object with all data form DB
      */
     @Override
@@ -60,15 +61,14 @@ public class SignableImplement implements Signable {
      * Request a Sign Up
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException
-     * @throws exceptions.UserAlreadyExistException
-     * @throws exceptions.DatabaseNotFoundException
-     * @throws exceptions.ConnectionException
-     * @throws exceptions.MaxConnectionException
+     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
+     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
+     * @return a user object
      */
     @Override
-
-
     public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
 
@@ -77,7 +77,7 @@ public class SignableImplement implements Signable {
             msg.setUser(user);
             msg.setAccion(Accion.SIGNUP);
 
-            serverConnection(msg);
+            user = serverConnection(msg);
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,12 +92,12 @@ public class SignableImplement implements Signable {
      * request (SignIn or SignUp)
      *
      * @param message the message class contains the user and the request type
-     * @throws exceptions.ConnectionException an error message shows if the connection failed
-     * @throws exceptions.UserPasswordException
-     * @throws exceptions.UserAlreadyExistException
-     * @throws exceptions.DatabaseNotFoundException
-     * @throws exceptions.MaxConnectionException
-     * @throws java.lang.ClassNotFoundException
+     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
+     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
+     * @throws java.lang.ClassNotFoundException general exception is the class do not exist
      * @return A message with the User object containing the data from DB
      */
     public User serverConnection(Message message) throws ConnectionException, UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ClassNotFoundException, MaxConnectionException {
@@ -156,8 +156,6 @@ public class SignableImplement implements Signable {
         } catch (NumberFormatException ex) {
             LOG.log(Level.SEVERE, "An error occurred in serverConnection", ex);
         }
-
         return mes.getUser();
     }
-
 }
