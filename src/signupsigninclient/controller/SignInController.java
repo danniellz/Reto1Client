@@ -109,9 +109,11 @@ public class SignInController {
             LOG.info("Login Button Pressed");
             //if the user or password fields are empty, throw a message
             if ((username.equals("") || password.equals(""))
-                    || (username.equals("") && password.equals(""))) {
+               || (username.equals("") && password.equals(""))) {
                 LOG.info("Null value in User or password field");
                 errorLbl.setVisible(true);
+                userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
+                passwordTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
             } else {
                 LOG.info("Proccesing user info...");
                 User user = new User();
@@ -139,6 +141,8 @@ public class SignInController {
             }
         } catch (UserPasswordException ex) {
             errorLbl.setVisible(true);
+            userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
+            passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
         } catch (ConnectionException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -241,6 +245,8 @@ public class SignInController {
             }
             //Show error label
             errorLbl.setVisible(false);
+            userTxt.setStyle("");
+            passwordTxt.setStyle("");
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting User field control", ex);
         }
@@ -266,6 +272,8 @@ public class SignInController {
             }
             //Show error label
             errorLbl.setVisible(false);
+            userTxt.setStyle("");
+            passwordTxt.setStyle("");
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error Setting Password field control", ex);
         }

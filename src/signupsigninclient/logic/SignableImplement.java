@@ -156,8 +156,6 @@ public class SignableImplement implements Signable {
         } catch (NumberFormatException ex) {
             LOG.log(Level.SEVERE, "An error occurred in serverConnection", ex);
         }
-
         return mes.getUser();
     }
-
 }
