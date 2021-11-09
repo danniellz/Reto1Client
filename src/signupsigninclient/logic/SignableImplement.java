@@ -1,3 +1,4 @@
+
 package signupsigninclient.logic;
 
 import exceptions.ConnectionException;
@@ -69,7 +70,7 @@ public class SignableImplement implements Signable {
     @Override
 
 
-    public void signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+    public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
 
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
@@ -77,12 +78,13 @@ public class SignableImplement implements Signable {
             msg.setUser(user);
             msg.setAccion(Accion.SIGNUP);
 
-            serverConnection(msg);
+            user = serverConnection(msg);
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
 
         }
+        return user;
 
     }
 

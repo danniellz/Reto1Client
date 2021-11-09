@@ -29,9 +29,16 @@ import signupsigninclient.SignUpSignInClient;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignUpControllerTest extends ApplicationTest {
 
+    /**
+     *
+     */
     public SignUpControllerTest() {
     }
 
+    /**
+     *
+     * @throws TimeoutException
+     */
     @BeforeClass
     public static void setUpClass() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
@@ -39,6 +46,9 @@ public class SignUpControllerTest extends ApplicationTest {
 
     }
 
+    /**
+     *
+     */
     @Test
     public void test0A_start() {
         
@@ -46,6 +56,9 @@ public class SignUpControllerTest extends ApplicationTest {
         verifyThat("#signUpPanel", isVisible());
     }
 
+    /**
+     *
+     */
     @Test
     public void test0B_InitalState() {
         clickOn("#userTxt");
@@ -59,6 +72,9 @@ public class SignUpControllerTest extends ApplicationTest {
         verifyThat("#signInHl", isEnabled());
     }
 
+    /**
+     *
+     */
     @Test
     public void test0C_RegisterIsEnabled() {
       
@@ -78,7 +94,11 @@ public class SignUpControllerTest extends ApplicationTest {
     }
    
     //solo se puede una vez por login
-   /* @Test
+
+    /**
+     *
+     */
+   @Test
     public void test0Z_RegisterOk(){
         clickOn("#userTxt");
         write("Jamiro");
@@ -94,7 +114,11 @@ public class SignUpControllerTest extends ApplicationTest {
         clickOn("#registerBtn");
         clearText();
     
-    }*/
+    }
+
+    /**
+     *
+     */
     public void clearText() {
         doubleClickOn("#userTxt");
         this.push(CONTROL,A);
