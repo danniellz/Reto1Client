@@ -7,10 +7,9 @@ package signupsigninclient.controller;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
-import exceptions.IncorrectPasswordException;
-import exceptions.InvalidEmailFormatException;
+import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserNotFoundException;
+import exceptions.UserPasswordException;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -450,17 +449,15 @@ public class SignUpController {
             } catch (UserAlreadyExistException ex) {
                 Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
                 
-            } catch (UserNotFoundException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
             } catch (DatabaseNotFoundException ex) {
                 Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
             } catch (ConnectionException ex) {
                 Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
-            } catch (IncorrectPasswordException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorret password check the password Textlabels", ex);
-            } catch (InvalidEmailFormatException ex) {
-                Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Invalid Domain in the email Label", ex);
-            }
+            } catch (UserPasswordException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MaxConnectionException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
              
         

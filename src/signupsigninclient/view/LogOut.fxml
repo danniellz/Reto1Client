@@ -20,7 +20,7 @@
          </font></Label>
       <MenuBar fx:id="menuBar" layoutY="1.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu fx:id="file" mnemonicParsing="false" text="File">
             <items>
               <MenuItem fx:id="logOutItem" mnemonicParsing="false" onAction="#handleLogOut" text="Log Out" />
                   <MenuItem fx:id="exitItem" mnemonicParsing="false" onAction="#handleExit" text="Exit" />

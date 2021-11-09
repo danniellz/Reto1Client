@@ -69,7 +69,7 @@ public class SignableImplement implements Signable {
     @Override
 
 
-    public void signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+    public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
 
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
@@ -83,6 +83,7 @@ public class SignableImplement implements Signable {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
 
         }
+        return user;
 
     }
 
