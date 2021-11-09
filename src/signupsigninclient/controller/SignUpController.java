@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsigninclient.controller;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
-
 import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
 import exceptions.UserPasswordException;
@@ -132,6 +126,7 @@ public class SignUpController {
         stage.setScene(scene);
         stage.setTitle("SING UP");
         stage.setResizable(false);
+
         registerBtn.setDisable(true);
         userErrorLbl.setVisible(false);
         fullNameErrorLbl.setVisible(false);
@@ -154,8 +149,7 @@ public class SignUpController {
     }
 
     /**
-     * this method puts a limit in the textLabels (25 limit except email
-     * textLabel)
+     * this method puts a limit in the textLabels (25 limit except email textLabel)
      */
     private void charlimit() {
 
@@ -260,6 +254,8 @@ public class SignUpController {
             if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
                 emailTxt.setStyle(" ");
+                emailErrorLbl.setStyle("-fx-border-color: WHITE;");
+
 
             } else {
                 emailErrorLbl.setText("ERROR domain not valid");
@@ -267,11 +263,13 @@ public class SignUpController {
                 emailErrorLbl.setVisible(true);
                 emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
+
             }
         } else if (newValue) {
             LOG.info("Focus gained on fullNameTxt");
         }
     }
+
 
     /**
      * checks if the password textField has a minimum of 6 chars
@@ -279,6 +277,7 @@ public class SignUpController {
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
      * @param newValue is a boolean to know where is the focus
+
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
@@ -345,6 +344,7 @@ public class SignUpController {
             passwordTxt.setText(password);
 
             passwordErrorLbl.setText("Password must be less than 50 character");
+
             passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             passwordErrorLbl.setVisible(true);
             passwordErrorLbl.setTextFill(Color.web("#ff0000"));
@@ -443,21 +443,22 @@ public class SignUpController {
             sign.signUp(user);
 
             openSignInWindow();
+
         } catch (UserAlreadyExistException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
             userErrorLbl.setText("User already exist, try another");
             userErrorLbl.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             userErrorLbl.setVisible(true);
             userErrorLbl.setStyle("-fx-text-fill: #DC143C");
-
-        } catch (UserPasswordException ex) {
+        }  catch (UserPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
         } catch (DatabaseNotFoundException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
         } catch (ConnectionException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
         } catch (MaxConnectionException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Max Connection reached", ex);
+
         }
 
     }
