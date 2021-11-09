@@ -44,8 +44,11 @@ public class SignUpController {
 
     private static final int LESS_LENGHT = 6;
     private static final int MAX_LENGHT = 25;
+
+    /**
+     * this is the pattern structures the form of the Email
+     */
     public static final Pattern VALIDEMAIL = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    public static final Pattern VALIDPASS = Pattern.compile("^[a-zA-Z0-9]+$");
 
     private Stage stage;
 
@@ -124,6 +127,7 @@ public class SignUpController {
         stage.setTitle("SING UP");
         stage.setResizable(false);
 
+        registerBtn.setDisable(true);
         userErrorLbl.setVisible(false);
         fullNameErrorLbl.setVisible(false);
         emailErrorLbl.setVisible(false);
@@ -133,9 +137,7 @@ public class SignUpController {
         charlimit();
         fullNameTxt.focusedProperty().addListener(this::focusLostEspChar);
         emailTxt.focusedProperty().addListener(this::domainControl);
-
         stage.setOnCloseRequest(this::closeProgramSingUp);
-        registerBtn.setDisable(true);
 
         disableButtonWhenTextFieldsEmpty();
         signInHl.addEventHandler(ActionEvent.ACTION, this::clickHyperlink);
@@ -147,8 +149,7 @@ public class SignUpController {
     }
 
     /**
-     * +*************Start ARITZ**************************** this method puts a
-     * limit in the textLabels (25 limit except email textLabel)
+     * this method puts a limit in the textLabels (25 limit except email textLabel)
      */
     private void charlimit() {
 
@@ -223,7 +224,7 @@ public class SignUpController {
             if (matcher.find()) {
                 System.out.println("INCUMPLE" + matcher.find());
                 LOG.info("SI NO encuentra");
-
+                fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 fullNameErrorLbl.setVisible(true);
                 fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
@@ -239,7 +240,7 @@ public class SignUpController {
     }
 
     /**
-     * domain control checks from "@" if domain of email is valid
+     * domain control checks if there is a "@" and "." as the domain of email
      *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
@@ -252,24 +253,31 @@ public class SignUpController {
             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
             if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
+                emailTxt.setStyle(" ");
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
+
 
             } else {
                 emailErrorLbl.setText("ERROR domain not valid");
+                emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 emailErrorLbl.setVisible(true);
-                emailErrorLbl.setStyle("-fx-border-color: #DC143C;");
+                emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
+
 
             }
         } else if (newValue) {
             LOG.info("Focus gained on fullNameTxt");
         }
     }
-// final parte aritz
+
 
     /**
-     * @param observable
-     * @param oldValue
-     * @param newValue
+     * checks if the password textField has a minimum of 6 chars
+     *
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
+
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
@@ -282,19 +290,23 @@ public class SignUpController {
             if (passwordTxt.getText().length() < LESS_LENGHT) {
                 String password = passwordTxt.getText();
                 passwordTxt.setText(password);
+                passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 passwordErrorLbl.setVisible(true);
                 passwordErrorLbl.setTextFill(Color.web("#ff0000"));
             } else {
+                passwordTxt.setStyle(" ");
                 passwordErrorLbl.setVisible(false);
             }
         }
     }
 
     /**
+     * checks if the password textField and the repeatpassword textfield has the
+     * same text
      *
-     * @param observable
-     * @param oldValue
-     * @param newValue
+     * @param observable is the field that have the focus action
+     * @param oldValue is a boolean to know where was the focus
+     * @param newValue is a boolean to know where is the focus
      */
     private void focusChangeRepeatPassword(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         if (newValue) {
@@ -304,10 +316,12 @@ public class SignUpController {
         } else if (oldValue) {
             LOG.info("el foco salido del campo repeatPassword");
             if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
+                repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 repeatPasswordErrorLbl.setVisible(true);
                 repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
             } else {
+                repeatPasswordTxt.setStyle(" ");
                 repeatPasswordErrorLbl.setVisible(false);
             }
         }
@@ -330,12 +344,16 @@ public class SignUpController {
             passwordTxt.setText(password);
 
             passwordErrorLbl.setText("Password must be less than 50 character");
+
+            passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             passwordErrorLbl.setVisible(true);
             passwordErrorLbl.setTextFill(Color.web("#ff0000"));
         }
         if (MAX_LENGHT < passwordTxt.getText().length()) {
             LOG.info("Campo informado valido");
+            passwordTxt.setStyle("   ");
             passwordErrorLbl.setVisible(false);
+            
         }
 
     }
@@ -369,6 +387,7 @@ public class SignUpController {
         if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
             LOG.info("error de contraseñas");
             repeatPasswordErrorLbl.setText("Passwords don't match");
+            repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
             error = true;
@@ -427,7 +446,11 @@ public class SignUpController {
 
         } catch (UserAlreadyExistException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
-        } catch (UserPasswordException ex) {
+            userErrorLbl.setText("User already exist, try another");
+            userErrorLbl.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+            userErrorLbl.setVisible(true);
+            userErrorLbl.setStyle("-fx-text-fill: #DC143C");
+        }  catch (UserPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
         } catch (DatabaseNotFoundException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
@@ -435,15 +458,16 @@ public class SignUpController {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
         } catch (MaxConnectionException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Max Connection reached", ex);
+
         }
 
     }
 
     /**
-     * Es el metodo que abre la ventana de SignUp
+     * is the method that opens the SignIn pane
      *
-     * @param event Es el evento para cuando hace click en el boton SignUp
-     * @return
+     * @param event is event when we click on the Hyperlink signIn
+     *
      */
     private void clickHyperlink(ActionEvent HyperLinkPress) {
         try {
@@ -454,6 +478,12 @@ public class SignUpController {
         }
     }
 
+    /**
+     * this method create the sigIn pane
+     *
+     * @param primaryStage
+     * @throws IOException
+     */
     private void startSignInWindow(Stage primaryStage) throws IOException {
         try {
             LOG.info("Starting SignIn window...");
@@ -473,9 +503,9 @@ public class SignUpController {
 
     /**
      *
-     * Mentodo para confirmar el cierre de la ventana SignIn
+     * this method confirm if you want to exit the app
      *
-     * @param e
+     * @param e is the event  to close the pane
      */
     @FXML
     public void closeProgramSingUp(WindowEvent e) {
@@ -491,20 +521,6 @@ public class SignUpController {
         }
     }
 
-    /**
-     * Es el metodo que alerta para cerrar secion en logout
-     *
-     * @param event Es el evento para cuando hace click en el boton logOut
-     */
-    @FXML
-    private void mostrarAlertConfirmation(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmacion");
-        alert.setContentText("¿Deseas realmente confirmar?");
-        alert.showAndWait();
-
-    }
 
     private void openSignInWindow() {
         try {
