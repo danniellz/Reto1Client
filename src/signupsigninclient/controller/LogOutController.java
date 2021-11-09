@@ -40,19 +40,30 @@ public class LogOutController {
     private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
 
     /**
-     *
-     * @param logOutStage
+     * Set the log out stage
+     * 
+     * @param logOutStage Log out stage value
      */
     public void setStage(Stage logOutStage) {
         stage = logOutStage;
     }
 
+    /**
+     * Set the greeting with received user data
+     * 
+     * @param user Signed in user
+     */
     public void initData(User user) {
         String fullName;
         fullName = user.getFullName();
         messageLbl.setText("Hello " + fullName + ", you have succesfully logged in!!");
     }
     
+    /**
+     * Initialize window
+     * 
+     * @param root Contains the FXML
+     */
     public void initStage(Parent root) {
         try {
             LOG.info("Initializing stage...");
@@ -71,7 +82,7 @@ public class LogOutController {
     }
     
     /**
-     * Calling this method will close the app (EJ: Pressing the window exit button)
+     * Calling this method will close the application
      * 
      * @param closeEvent A window event
      */
@@ -84,16 +95,11 @@ public class LogOutController {
         }  
     }
     
-    public void handleLogOut(ActionEvent logOutEvent) {
-        try {
-            LOG.info("Logging out...");
-            
-            startSignInWindow(stage);
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, "Log Out error", ex);
-        }
-    }
-    
+    /**
+     * Calling this method will close the application
+     * 
+     * @param closeEvent Close action event
+     */
     public void handleExit(ActionEvent closeEvent){
         try{
             LOG.info("Closing...");
@@ -104,7 +110,22 @@ public class LogOutController {
     }
     
     /**
-     * Open the SignIn window
+     * Calling this method will log out
+     * 
+     * @param logOutEvent Log Out action event
+     */
+    public void handleLogOut(ActionEvent logOutEvent) {
+        try {
+            LOG.info("Logging out...");
+            
+            startSignInWindow(stage);
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Log Out error", ex);
+        }
+    }
+    
+    /**
+     * Calling this method will open the sign in window
      * 
      * @param primaryStage stage object (window)
      * @throws IOException Throws an error if the SignUp window fails to open
