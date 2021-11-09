@@ -149,13 +149,14 @@ public class SignUpController {
     }
 
     /**
-     * this method puts a limit in the textLabels (25 limit except email textLabel)
+     * this method puts a limit in the textLabels (25 limit except email
+     * textLabel)
      */
     private void charlimit() {
 
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (userTxt.getText().length() > 25) {
                     userTxt.deletePreviousChar();
                     userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
@@ -163,7 +164,6 @@ public class SignUpController {
                     userErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
                 } else {
-
                     userTxt.setStyle("-fx-border-color: White;");
                     userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
@@ -173,7 +173,7 @@ public class SignUpController {
         });
         fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (fullNameTxt.getText().length() > 25) {
                     fullNameTxt.deletePreviousChar();
                     fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
@@ -187,7 +187,7 @@ public class SignUpController {
         });
         emailTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (emailTxt.getText().length() > 50) {
                     emailTxt.deletePreviousChar();
                     emailErrorLbl.setVisible(true);
@@ -220,22 +220,17 @@ public class SignUpController {
         Matcher matcher = espChar.matcher(fullNameTxt.getText().trim());
         //este codigo solo se ejecuta cuando se pierde el Foco
         if (oldValue) {
-            LOG.info("focus lost of  fullNameTxt");
             if (matcher.find()) {
-                System.out.println("INCUMPLE" + matcher.find());
-                LOG.info("SI NO encuentra");
+                LOG.info("Doesn't match: " + matcher.find());
                 fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 fullNameErrorLbl.setVisible(true);
                 fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
-
             } else {
-                LOG.info("SI encuentra");
-                System.out.println("CUMLE" + matcher.find());
+                fullNameTxt.setStyle("");
                 fullNameErrorLbl.setVisible(false);
-
             }
         } else if (newValue) {
-            LOG.info("Focus gained on fullNameTxt");
+            LOG.info("Focus gained on Full Name field");
         }
     }
 
@@ -248,14 +243,11 @@ public class SignUpController {
      */
     private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (oldValue) {
-            LOG.info("Focus Lost on fullNameTxt");
-
             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
             if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
                 emailTxt.setStyle(" ");
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
-
 
             } else {
                 emailErrorLbl.setText("ERROR domain not valid");
@@ -263,13 +255,11 @@ public class SignUpController {
                 emailErrorLbl.setVisible(true);
                 emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
-
             }
         } else if (newValue) {
-            LOG.info("Focus gained on fullNameTxt");
+            LOG.info("Focus gained on Email field");
         }
     }
-
 
     /**
      * checks if the password textField has a minimum of 6 chars
@@ -277,16 +267,15 @@ public class SignUpController {
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
      * @param newValue is a boolean to know where is the focus
-
+     *
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
         if (newValue) {
-            LOG.info("el foco esta en campo password");
+            LOG.info("Focus gained on Password field");
             passwordTxt.textProperty().addListener(this::limitPasswordTextField);
 
         } else if (oldValue) {
-            LOG.info("el foco salio del campo password ");
             if (passwordTxt.getText().length() < LESS_LENGHT) {
                 String password = passwordTxt.getText();
                 passwordTxt.setText(password);
@@ -310,11 +299,10 @@ public class SignUpController {
      */
     private void focusChangeRepeatPassword(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         if (newValue) {
-            LOG.info("el foco esta en campo repeatPassword");
+            LOG.info("Focus gained on Repeat Password field");
             repeatPasswordTxt.textProperty().addListener(this::limitPasswordTextField);
 
         } else if (oldValue) {
-            LOG.info("el foco salido del campo repeatPassword");
             if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
                 repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 repeatPasswordErrorLbl.setVisible(true);
@@ -351,9 +339,9 @@ public class SignUpController {
         }
         if (MAX_LENGHT < passwordTxt.getText().length()) {
             LOG.info("Campo informado valido");
-            passwordTxt.setStyle("   ");
+            passwordTxt.setStyle("");
             passwordErrorLbl.setVisible(false);
-            
+
         }
 
     }
@@ -381,11 +369,11 @@ public class SignUpController {
      * @return "error" boolean if the two passwords don't match.
      */
     private boolean checkPasswordsEqual() {
-        LOG.info("comprobando contraseñas si son iguales");
+        LOG.info("Checking if passwords match...");
         boolean error = false;
 
         if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
-            LOG.info("error de contraseñas");
+            LOG.info("Password error");
             repeatPasswordErrorLbl.setText("Passwords don't match");
             repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
@@ -450,7 +438,7 @@ public class SignUpController {
             userErrorLbl.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             userErrorLbl.setVisible(true);
             userErrorLbl.setStyle("-fx-text-fill: #DC143C");
-        }  catch (UserPasswordException ex) {
+        } catch (UserPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
         } catch (DatabaseNotFoundException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
@@ -505,22 +493,29 @@ public class SignUpController {
      *
      * this method confirm if you want to exit the app
      *
-     * @param e is the event  to close the pane
+     * @param closeEvent is the event to close the pane
      */
     @FXML
-    public void closeProgramSingUp(WindowEvent e) {
-        LOG.info("close program");
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Close Program");
-        alert.setHeaderText("Do you really want to Exit?");
-        Optional<ButtonType> resp = alert.showAndWait();
-        if (resp.get() == ButtonType.OK) {
-            Platform.exit();
-        } else {
-            e.consume();
+    public void closeProgramSingUp(WindowEvent closeEvent) {
+        try {
+            LOG.info("Confirm Closing");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("¿Are you sure you want to exit?");
+            alert.setTitle("Exit");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK) {
+                LOG.info("Closing...");
+                Platform.exit();
+            } else {
+                LOG.info("Closing Canceled");
+                //Cancel the event process
+                closeEvent.consume();
+            }
+
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Close request error", ex);
         }
     }
-
 
     private void openSignInWindow() {
         try {

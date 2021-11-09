@@ -9,6 +9,12 @@ import signable.Signable;
  * @version 1.0
  */
 public class SignableFactory {
+
+    /**
+     * Get a Signable interface with a new SignableImplement
+     * 
+     * @return a new SignableImplement
+     */
     public Signable getSignable(){
         return new SignableImplement();
     }  
