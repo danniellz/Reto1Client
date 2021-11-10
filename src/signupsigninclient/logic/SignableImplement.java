@@ -1,4 +1,3 @@
-
 package signupsigninclient.logic;
 
 import exceptions.ConnectionException;
@@ -34,11 +33,16 @@ public class SignableImplement implements Signable {
      * Request a Sign In
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
-     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
-     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
-     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
-     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
+     * @throws exceptions.UserPasswordException if the user or password are
+     * wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist,
+     * error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with
+     * the DB, error message
+     * @throws exceptions.ConnectionException if an error occurred between the
+     * client an server, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread
+     * available, error message
      * @return the User object with all data form DB
      */
     @Override
@@ -62,17 +66,21 @@ public class SignableImplement implements Signable {
      * Request a Sign Up
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
-     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
-     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
-     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
-     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
+     * @throws exceptions.UserPasswordException if the user or password are
+     * wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist,
+     * error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with
+     * the DB, error message
+     * @throws exceptions.ConnectionException if an error occurred between the
+     * client an server, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread
+     * available, error message
      * @return a user object
      */
     @Override
     public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
-
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
             Message msg = new Message();
             msg.setUser(user);
@@ -82,8 +90,8 @@ public class SignableImplement implements Signable {
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
-
         }
+
         return user;
 
     }
@@ -93,12 +101,18 @@ public class SignableImplement implements Signable {
      * request (SignIn or SignUp)
      *
      * @param message the message class contains the user and the request type
-     * @throws exceptions.ConnectionException if an error occurred between the client an server, error message
-     * @throws exceptions.UserPasswordException if the user or password are wrong, error message
-     * @throws exceptions.UserAlreadyExistException if the user already exist, error message
-     * @throws exceptions.DatabaseNotFoundException if an error occurred with the DB, error message
-     * @throws exceptions.MaxConnectionException if there is no more thread available, error message
-     * @throws java.lang.ClassNotFoundException general exception is the class do not exist
+     * @throws exceptions.ConnectionException if an error occurred between the
+     * client an server, error message
+     * @throws exceptions.UserPasswordException if the user or password are
+     * wrong, error message
+     * @throws exceptions.UserAlreadyExistException if the user already exist,
+     * error message
+     * @throws exceptions.DatabaseNotFoundException if an error occurred with
+     * the DB, error message
+     * @throws exceptions.MaxConnectionException if there is no more thread
+     * available, error message
+     * @throws java.lang.ClassNotFoundException general exception is the class
+     * do not exist
      * @return A message with the User object containing the data from DB
      */
     public User serverConnection(Message message) throws ConnectionException, UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ClassNotFoundException, MaxConnectionException {

@@ -70,7 +70,7 @@ public class SignInController {
      */
     public void initStage(Parent root) {
         try {
-            LOG.info("Initializing stage...");
+            LOG.info("Initializing Stage...");
             //Creates a new Scene
             Scene scene = new Scene(root);
             //Associate the scene to window(stage)
@@ -87,7 +87,7 @@ public class SignInController {
             errorLbl.setVisible(false);
             errorLbl.setText("Incorrect User or Password");
             errorLbl.setStyle("-fx-text-fill: red");
-            //ventana asincrona
+            //Show window (asynchronous)
             stage.show();
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Stage init error", ex);
@@ -107,21 +107,22 @@ public class SignInController {
         password = passwordTxt.getText();
         try {
             LOG.info("Login Button Pressed");
-            //if the user or password fields are empty, throw a message
+            //if the user or password fields are empty, show the error label
             if ((username.equals("") || password.equals(""))
                     || (username.equals("") && password.equals(""))) {
-                LOG.info("Null value in User or password field");
+                LOG.info("Null Value In User or Password Field");
                 errorLbl.setVisible(true);
                 userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
                 passwordTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
             } else {
-                LOG.info("Proccesing user info...");
+                LOG.info("Proccesing User Info...");
                 User user = new User();
                 user.setLogin(username);
                 user.setPassword(password);
                 Signable sign = new SignableFactory().getSignable();
 
                 user = sign.signIn(user);
+                LOG.info("User data retrieved!");
 
                 try {
                     LOG.info("Starting LogOut Window...");
@@ -133,8 +134,8 @@ public class SignInController {
                     //Set the stage
                     logOutController.setStage(stage);
                     //initialize the window
-                    logOutController.initStage(root);
-                    logOutController.initData(user);
+                    LOG.info("Sending data for: " + user.getFullName());
+                    logOutController.initStage(root, user);
                 } catch (IOException ex) {
                     LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
                 }
@@ -162,8 +163,9 @@ public class SignInController {
             alert.setContentText("Database is not available, please, try again later");
             alert.showAndWait();
         } catch (UserAlreadyExistException ex) {
-            LOG.log(Level.SEVERE, "Login Button Error", ex);
-
+            LOG.log(Level.SEVERE, "User already exist", ex);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Login Button Pressed Error", ex);
         }
     }
 
@@ -188,7 +190,6 @@ public class SignInController {
                 //Cancel the event process
                 closeEvent.consume();
             }
-
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Close request error", ex);
         }
@@ -240,10 +241,10 @@ public class SignInController {
      */
     private void handleUserControl(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         try {
-            //if a 26 character its typed, take first character to 25 and set it to the field
+            //if a 26 character its typed, take first character to 25 and set it to the field(spaces not allowed)
             if (userTxt.getText().length() > 25) {
                 userTxt.setText(userTxt.getText().substring(0, 25));
-                LOG.info("25 character limit reached in user");
+                LOG.warning("25 character limit reached in user");
             }
             //Control empty spaces
             if (userTxt.getText().contains(" ")) {
@@ -267,10 +268,10 @@ public class SignInController {
      */
     private void handlePasswordControl(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         try {
-            //if a 26 character its typed, take first character to 25 and set it to the field
+            //if a 26 character its typed, take first character to 25 and set it to the field(spaces not allowed)
             if (passwordTxt.getText().length() > 25) {
                 passwordTxt.setText(passwordTxt.getText().substring(0, 25));
-                LOG.info("25 character limit reached in password");
+                LOG.warning("25 character limit reached in password");
             }
             //Control empty spaces
             if (passwordTxt.getText().contains(" ")) {

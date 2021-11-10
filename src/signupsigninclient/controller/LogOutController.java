@@ -23,9 +23,14 @@ import user.User;
  * Log Out Controller
  *
  * @author Mikel Matilla
+ * @version 1.0
  */
 public class LogOutController {
 
+    //LOGGER
+    private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
+
+    //Attributes
     private Stage stage;
 
     @FXML
@@ -39,9 +44,6 @@ public class LogOutController {
     @FXML
     private MenuItem exitItem;
 
-    //Atributes
-    private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
-
     /**
      * Set the log out stage
      *
@@ -52,31 +54,26 @@ public class LogOutController {
     }
 
     /**
-     * Set the greeting with received user data
-     *
-     * @param user Signed in user
-     */
-    public void initData(User user) {
-        String fullName;
-        fullName = user.getFullName();
-        messageLbl.setText("Hello " + fullName + ", you have succesfully logged in!!");
-    }
-
-    /**
      * Initialize window
      *
      * @param root Contains the FXML
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root, User user) {
         try {
             LOG.info("Initializing stage...");
+            //Creates a new Scene
             Scene scene = new Scene(root);
+            //Associate the scene to window(stage)
             stage.setScene(scene);
+            //Window properties
             stage.setTitle("Log Out");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
+            //Controls
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
+            messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
+            //Show window (asynchronous)
             stage.show();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Stage init error", e);

@@ -40,11 +40,10 @@ import user.User;
  */
 public class SignUpController {
 
+    //LOGGER
     private static final Logger LOG = Logger.getLogger(SignUpController.class.getName());
 
-    private static final int LESS_LENGHT = 6;
-    private static final int MAX_LENGHT = 25;
-
+    //Attributes
     /**
      * this is the pattern structures the form of the Email
      */
@@ -70,7 +69,7 @@ public class SignUpController {
     @FXML
     private Label repeatPasswordLbl;
 
-    //LABEL THE ERROR
+    //ERROR LABELS
     @FXML
     private Label userErrorLbl;
     @FXML
@@ -105,12 +104,10 @@ public class SignUpController {
     /**
      * Defines which view is going to show up when the application executes.
      *
-     *
      * @param primaryStage the view that will show from the main application.
      */
     public void setStage(Stage primaryStage) {
         stage = primaryStage;
-
     }
 
     /**
@@ -121,12 +118,14 @@ public class SignUpController {
     public void initStage(Parent root) {
 
         LOG.info("Initializing stage...");
-
+        //Creates a new Scene
         Scene scene = new Scene(root);
+        //Associate the scene to window(stage)
         stage.setScene(scene);
+        //Window properties
         stage.setTitle("SING UP");
         stage.setResizable(false);
-
+        //Controls
         registerBtn.setDisable(true);
         userErrorLbl.setVisible(false);
         fullNameErrorLbl.setVisible(false);
@@ -144,7 +143,7 @@ public class SignUpController {
         registerBtn.setOnAction(this::registerValidation);
         passwordTxt.focusedProperty().addListener(this::focusChanged);
         repeatPasswordTxt.focusedProperty().addListener(this::focusChangeRepeatPassword);
-
+        //Show window (asynchronous)
         stage.show();
     }
 
@@ -153,28 +152,31 @@ public class SignUpController {
      * textLabel)
      */
     private void charlimit() {
-
+        //USER field control
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (userTxt.getText().length() > 25) {
+                    LOG.warning("25 characters limit reached in User field");
+                    userErrorLbl.setText("25 characters limit reached");
                     userTxt.deletePreviousChar();
                     userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
                     userErrorLbl.setVisible(true);
                     userErrorLbl.setStyle("-fx-text-fill: #DC143C");
-
                 } else {
                     userTxt.setStyle("-fx-border-color: White;");
                     userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
                 }
             }
-
         });
+        //FULLNAME field control
         fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (fullNameTxt.getText().length() > 25) {
+                    LOG.warning("25 characters limit reached in FullName field");
+                    fullNameErrorLbl.setText("25 characters limit reached");
                     fullNameTxt.deletePreviousChar();
                     fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                     fullNameErrorLbl.setVisible(true);
@@ -185,10 +187,13 @@ public class SignUpController {
                 }
             }
         });
+        //EMAIL field control
         emailTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (emailTxt.getText().length() > 50) {
+                    LOG.warning("50 characters limit reached in Email field");
+                    emailErrorLbl.setText("50 characters limit reached");
                     emailTxt.deletePreviousChar();
                     emailErrorLbl.setVisible(true);
                     emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
@@ -201,7 +206,49 @@ public class SignUpController {
 
             }
         });
+        //PASSWORD field control
+        passwordTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (passwordTxt.getText().length() > 25) {
+                    LOG.warning("25 characters limit reached in Password field");
+                    passwordErrorLbl.setText("25 characters limit reached");
+                    passwordTxt.deletePreviousChar();
+                    passwordErrorLbl.setVisible(true);
+                    passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    passwordErrorLbl.setVisible(true);
+                    passwordErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    passwordErrorLbl.setVisible(false);
+                    passwordErrorLbl.setStyle("");
+                }
 
+                if (passwordTxt.getText().isEmpty()) {
+                    LOG.warning("Null value in Password field");
+                    passwordErrorLbl.setText("Please, enter a password");
+                    passwordErrorLbl.setVisible(true);
+                }
+
+            }
+        });
+        //REPEATPASSWORD field control
+        repeatPasswordTxt.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (repeatPasswordTxt.getText().length() > 25) {
+                    LOG.warning("25 characters limit reached in RepeatPassword field");
+                    repeatPasswordErrorLbl.setText("25 characters limit reached");
+                    repeatPasswordTxt.deletePreviousChar();
+                    repeatPasswordErrorLbl.setVisible(true);
+                    repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
+                    repeatPasswordErrorLbl.setVisible(true);
+                    repeatPasswordErrorLbl.setStyle("-fx-text-fill: #DC143C");
+                } else {
+                    repeatPasswordErrorLbl.setVisible(false);
+                    repeatPasswordErrorLbl.setStyle("");
+                }
+            }
+        });
     }
 
     /**
@@ -213,15 +260,15 @@ public class SignUpController {
      * @param newValue is a boolean to know where is the focus
      */
     public void focusLostEspChar(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
         String comp = "[^A-Za-zÀ-ȕ\\s]";
-
         Pattern espChar = Pattern.compile(comp);
         Matcher matcher = espChar.matcher(fullNameTxt.getText().trim());
+
         //este codigo solo se ejecuta cuando se pierde el Foco
         if (oldValue) {
             if (matcher.find()) {
-                LOG.info("Doesn't match: " + matcher.find());
+                LOG.warning("Specials characters are not allowed");
+                fullNameErrorLbl.setText("Numbers or special characters are not allowed");
                 fullNameTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 fullNameErrorLbl.setVisible(true);
                 fullNameErrorLbl.setStyle("-fx-text-fill: #DC143C");
@@ -246,15 +293,22 @@ public class SignUpController {
             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
             if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
-                emailTxt.setStyle(" ");
+                emailTxt.setStyle("");
                 emailErrorLbl.setStyle("-fx-border-color: WHITE;");
 
             } else {
-                emailErrorLbl.setText("ERROR domain not valid");
+                LOG.warning("Invalid email format");
+                emailErrorLbl.setText("Please, enter a valid email");
                 emailTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 emailErrorLbl.setVisible(true);
                 emailErrorLbl.setStyle("-fx-text-fill: #DC143C");
 
+            }
+
+            if (emailTxt.getText().isEmpty()) {
+                LOG.warning("Null value in Email field");
+                emailErrorLbl.setText("Please, enter a email");
+                emailErrorLbl.setVisible(true);
             }
         } else if (newValue) {
             LOG.info("Focus gained on Email field");
@@ -270,21 +324,25 @@ public class SignUpController {
      *
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
         if (newValue) {
             LOG.info("Focus gained on Password field");
-            passwordTxt.textProperty().addListener(this::limitPasswordTextField);
-
         } else if (oldValue) {
-            if (passwordTxt.getText().length() < LESS_LENGHT) {
+            if (passwordTxt.getText().length() < 6) {
+                passwordErrorLbl.setText("A minimum of 6 characters is required");
                 String password = passwordTxt.getText();
                 passwordTxt.setText(password);
                 passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 passwordErrorLbl.setVisible(true);
                 passwordErrorLbl.setTextFill(Color.web("#ff0000"));
             } else {
-                passwordTxt.setStyle(" ");
+                passwordTxt.setStyle("");
                 passwordErrorLbl.setVisible(false);
+            }
+
+            if (passwordTxt.getText().isEmpty()) {
+                LOG.warning("Null value in Password field");
+                passwordErrorLbl.setText("Please, enter a password");
+                passwordErrorLbl.setVisible(true);
             }
         }
     }
@@ -300,66 +358,17 @@ public class SignUpController {
     private void focusChangeRepeatPassword(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         if (newValue) {
             LOG.info("Focus gained on Repeat Password field");
-            repeatPasswordTxt.textProperty().addListener(this::limitPasswordTextField);
-
         } else if (oldValue) {
+
             if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
+                repeatPasswordErrorLbl.setText("Passwords don't match");
                 repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
                 repeatPasswordErrorLbl.setVisible(true);
                 repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
-
             } else {
-                repeatPasswordTxt.setStyle(" ");
+                repeatPasswordTxt.setStyle("");
                 repeatPasswordErrorLbl.setVisible(false);
             }
-        }
-    }
-
-    /**
-     * Disables Sign Up button if there's at least one Text Field empty.
-     *
-     * @param observable observes the changes that happen in the Text Field.
-     * @param oldValue the value that was in the Text Field before changes
-     * happened.
-     * @param newValue the value that is in the Text Field after changes
-     * happenes.
-     */
-    private void limitPasswordTextField(ObservableValue obsevable, String oldValue, String newValue) {
-
-        if (passwordTxt.getText().length() > MAX_LENGHT) {
-
-            String password = passwordTxt.getText().substring(0, MAX_LENGHT);
-            passwordTxt.setText(password);
-
-            passwordErrorLbl.setText("Password must be less than 50 character");
-
-            passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
-            passwordErrorLbl.setVisible(true);
-            passwordErrorLbl.setTextFill(Color.web("#ff0000"));
-        }
-        if (MAX_LENGHT < passwordTxt.getText().length()) {
-            LOG.info("Campo informado valido");
-            passwordTxt.setStyle("");
-            passwordErrorLbl.setVisible(false);
-
-        }
-
-    }
-
-    /**
-     * Limits the max number of characters of the "Repeat Password" Text Field.
-     *
-     * @param observable observes the changes that happen in the Text Field.
-     * @param oldValue the value that was in the Text Field before changes
-     * happened.
-     * @param newValue the value that is in the Text Field after changes
-     * happenes.
-     */
-    private void limitRepeatPasswordTextField(ObservableValue observable, String oldValue, String newValue) {
-
-        if (repeatPasswordTxt.getText().length() > MAX_LENGHT) {
-            String repPass = repeatPasswordTxt.getText().substring(0, MAX_LENGHT);
-            repeatPasswordTxt.setText(repPass);
         }
     }
 
@@ -373,14 +382,13 @@ public class SignUpController {
         boolean error = false;
 
         if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
-            LOG.info("Password error");
+            LOG.warning("Password don't match");
             repeatPasswordErrorLbl.setText("Passwords don't match");
             repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             repeatPasswordErrorLbl.setTextFill(Color.web("#FF0000"));
 
             error = true;
         }
-
         return error;
     }
 
@@ -408,7 +416,6 @@ public class SignUpController {
                         .or(passwordErrorLbl.visibleProperty())
                         .or(repeatPasswordErrorLbl.visibleProperty())
         );
-
     }
 
     /**
@@ -417,7 +424,7 @@ public class SignUpController {
      * @param event determines which event has happened.
      */
     private void registerValidation(ActionEvent event) {
-        LOG.info("Click button register");
+        LOG.info("Clicked on button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
 
@@ -431,6 +438,7 @@ public class SignUpController {
             sign.signUp(user);
 
             openSignInWindow();
+            LOG.info("User Registered, returning to SignIn window...");
 
         } catch (UserAlreadyExistException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
@@ -446,9 +454,7 @@ public class SignUpController {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
         } catch (MaxConnectionException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Max Connection reached", ex);
-
         }
-
     }
 
     /**
@@ -511,12 +517,12 @@ public class SignUpController {
                 //Cancel the event process
                 closeEvent.consume();
             }
-
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Close request error", ex);
         }
     }
 
+    //This method open the SignIn window
     private void openSignInWindow() {
         try {
             LOG.info("Starting LogIn Window...");
