@@ -433,6 +433,7 @@ public class SignUpController {
         user.setEmail(emailTxt.getText());
         user.setFullName(fullNameTxt.getText());
         user.setPassword(passwordTxt.getText());
+        
         try {
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
