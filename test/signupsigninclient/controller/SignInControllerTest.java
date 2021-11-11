@@ -6,22 +6,15 @@
 package signupsigninclient.controller;
 
 import java.util.concurrent.TimeoutException;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.CONTROL;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
-import static org.testfx.matcher.base.NodeMatchers.isFocused;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import signupsigninclient.SignUpSignInClient;
@@ -67,7 +60,7 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
-    //   @Test
+    @Test
     public void test0C_UserAndPasswordError() {
         clickOn("#userTxt");
         write("Aloy");
@@ -84,7 +77,7 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
-    @Test
+    // @Test
     public void test0D_UserNotExist() {
         clickOn("#userTxt");
         write("Aloy");
@@ -92,7 +85,10 @@ public class SignInControllerTest extends ApplicationTest {
         write("Aloy");
         clickOn("#loginBtn");
         verifyThat("#errorLnl", isVisible());
-
+        doubleClickOn("#userTxt");
+        eraseText(1);
+        doubleClickOn("#passwordTxt");
+        eraseText(1);
     }
 
     @Test
@@ -103,15 +99,18 @@ public class SignInControllerTest extends ApplicationTest {
         write("1234");
         clickOn("#loginBtn");
         verifyThat(".alert", NodeMatchers.isVisible());
+        doubleClickOn("#userTxt");
+        eraseText(1);
+        doubleClickOn("#passwordTxt");
+        eraseText(1);
     }
 
     @Test
     public void test0F_VisibleWindowSignUp() {
-        clickOn("#singUpHl");
+        clickOn("#signUpHl");
         verifyThat("#signUpPanel", isVisible());
     }
 
-    
     @Test
     public void test0G_LoginUserConnection() {
         clickOn("#userTxt");
