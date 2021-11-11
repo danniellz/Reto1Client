@@ -111,8 +111,9 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#signUpPanel", isVisible());
     }
 
+    
     @Test
-    public void test0G_LoginUser() {
+    public void test0G_LoginUserConnection() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
