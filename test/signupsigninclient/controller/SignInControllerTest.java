@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.api.FxToolkit;
@@ -37,14 +38,24 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test0A_start() {
+    public void testA_start() {
         verifyThat("#userTxt", hasText(""));
         verifyThat("#passwordTxt", hasText(""));
         verifyThat("#loginBtn", isEnabled());
     }
+    
+        
+    
+    @Test
+    public void testB_VisibleWindowSignUp() {
+        clickOn("#signUpHl");
+        verifyThat("#signUpPanel", isVisible());
+    }
 
     @Test
-    public void test0B_UserAndPassword50Characters() {
+    public void testC_UserAndPassword50Characters() {
+        clickOn("#signInHl");
+        verifyThat("#signInPanel", isVisible());
         clickOn("#userTxt");
         for (int i = 0; i < 26; i++) {
             write("a");
@@ -61,7 +72,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test0C_UserAndPasswordError() {
+    public void testD_UserAndPasswordError() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#loginBtn");
@@ -73,26 +84,28 @@ public class SignInControllerTest extends ApplicationTest {
         write("Aloy");
         clickOn("#loginBtn");
         verifyThat("#errorLbl", isVisible());
-        doubleClickOn("#passwordTxt");
-        eraseText(1);
-    }
-
-    // @Test
-    public void test0D_UserNotExist() {
-        clickOn("#userTxt");
-        write("Aloy");
-        clickOn("#passwordTxt");
-        write("Aloy");
-        clickOn("#loginBtn");
-        verifyThat("#errorLnl", isVisible());
-        doubleClickOn("#userTxt");
-        eraseText(1);
         doubleClickOn("#passwordTxt");
         eraseText(1);
     }
 
     @Test
-    public void test0E_ErrorServer() {
+    public void testE_UserNotExist() {
+        clickOn("#userTxt");
+        write("Aloy");
+        clickOn("#passwordTxt");
+        write("Aloy");
+        clickOn("#loginBtn");
+        verifyThat("#errorLbl", isVisible());
+        doubleClickOn("#userTxt");
+        eraseText(1);
+        doubleClickOn("#passwordTxt");
+        eraseText(1);
+    }
+
+    
+    @Test
+    @Ignore
+    public void testF_ErrorServer() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
@@ -106,13 +119,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test0F_VisibleWindowSignUp() {
-        clickOn("#signUpHl");
-        verifyThat("#signUpPanel", isVisible());
-    }
-
-    @Test
-    public void test0G_LoginUserConnection() {
+    public void testG_LoginUserConnection() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
