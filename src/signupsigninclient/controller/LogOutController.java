@@ -1,6 +1,7 @@
 package signupsigninclient.controller;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -9,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
@@ -18,13 +21,18 @@ import user.User;
 
 /**
  * Log Out Controller
- * 
+ *
  * @author Mikel Matilla
+ * @version 1.0
  */
 public class LogOutController {
-    
+
+    //LOGGER
+    private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
+
+    //Attributes
     private Stage stage;
-    
+
     @FXML
     private Pane logOutPanel;
     @FXML
@@ -35,13 +43,10 @@ public class LogOutController {
     private MenuItem logOutItem;
     @FXML
     private MenuItem exitItem;
-    
-    //Atributes
-    private static final Logger LOG = Logger.getLogger(LogOutController.class.getName());
 
     /**
      * Set the log out stage
-     * 
+     *
      * @param logOutStage Log out stage value
      */
     public void setStage(Stage logOutStage) {
@@ -49,101 +54,107 @@ public class LogOutController {
     }
 
     /**
-     * Set the greeting with received user data
-     * 
-     * @param user Signed in user
-     */
-    public void initData(User user) {
-        String fullName;
-        fullName = user.getFullName();
-        messageLbl.setText("Hello " + fullName + ", you have succesfully logged in!!");
-    }
-    
-    /**
      * Initialize window
-     * 
+     *
      * @param root Contains the FXML
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root, User user) {
         try {
             LOG.info("Initializing stage...");
+            //Creates a new Scene
             Scene scene = new Scene(root);
+            //Associate the scene to window(stage)
             stage.setScene(scene);
+            //Window properties
             stage.setTitle("Log Out");
             stage.setResizable(false);
             stage.setOnCloseRequest(this::handleCloseRequest);
+            //Controls
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
+            messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
+            //Show window (asynchronous)
             stage.show();
         } catch (Exception e) {
-             LOG.log(Level.SEVERE, "Stage init error", e);
+            LOG.log(Level.SEVERE, "Stage init error", e);
         }
-        
+
     }
-    
+
     /**
      * Calling this method will close the application
-     * 
+     *
      * @param closeEvent A window event
      */
-    public void handleCloseRequest(WindowEvent closeEvent){
-        try{
-            LOG.info("Closing...");
-            Platform.exit();
-        }catch(Exception e){
+    public void handleCloseRequest(WindowEvent closeEvent) {
+        try {
+            LOG.info("Confirm Closing");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("¿Are you sure you want to exit?");
+            alert.setTitle("Exit");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK) {
+                LOG.info("Closing...");
+                Platform.exit();
+            } else {
+                LOG.info("Closing Canceled");
+                //Cancel the event process
+                closeEvent.consume();
+            }
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Close request error", e);
-        }  
+        }
     }
-    
+
     /**
      * Calling this method will close the application
-     * 
+     *
      * @param closeEvent Close action event
      */
-    public void handleExit(ActionEvent closeEvent){
-        try{
+    public void handleExit(ActionEvent closeEvent) {
+        try {
             LOG.info("Closing...");
             Platform.exit();
-        }catch(Exception e){
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Close request error", e);
-        }  
+        }
     }
-    
+
     /**
      * Calling this method will log out
-     * 
+     *
      * @param logOutEvent Log Out action event
      */
     public void handleLogOut(ActionEvent logOutEvent) {
         try {
             LOG.info("Logging out...");
-            
+
             startSignInWindow(stage);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Log Out error", ex);
         }
     }
-    
+
     /**
      * Calling this method will open the sign in window
-     * 
+     *
      * @param primaryStage stage object (window)
      * @throws IOException Throws an error if the SignUp window fails to open
      */
-    private void startSignInWindow(Stage primaryStage) throws IOException{
-        try{
+    private void startSignInWindow(Stage primaryStage) throws IOException {
+        try {
             LOG.info("Starting SignIn Window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
-            Parent root = (Parent)loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/SignIn.fxml"));
+            Parent root = (Parent) loader.load();
             //Get controller
-            SignInController signinController = ((SignInController)loader.getController()); 
+            SignInController signinController = ((SignInController) loader.getController());
             //Set the stage
             signinController.setStage(primaryStage);
             //initialize the window
             signinController.initStage(root);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Error Starting SignUp Window", ex);
         }
-    } 
+    }
 }

@@ -50,8 +50,7 @@ public class SignUpControllerTest extends ApplicationTest {
      *
      */
     @Test
-    public void test0A_start() {
-        
+    public void testA_start() {
         doubleClickOn("#signUpHl");
         verifyThat("#signUpPanel", isVisible());
     }
@@ -60,7 +59,7 @@ public class SignUpControllerTest extends ApplicationTest {
      *
      */
     @Test
-    public void test0B_InitalState() {
+    public void testB_InitalState() {
         clickOn("#userTxt");
         verifyThat("#userTxt", isFocused());
         verifyThat("#userTxt", hasText(""));
@@ -76,8 +75,7 @@ public class SignUpControllerTest extends ApplicationTest {
      *
      */
     @Test
-    public void test0C_RegisterIsEnabled() {
-      
+    public void testC_RegisterIsDisabled() {
         clickOn("#userTxt");
         write("123456789123456789123456789123456789");
         clickOn("#fullNameTxt");
@@ -92,14 +90,93 @@ public class SignUpControllerTest extends ApplicationTest {
         clickOn("#registerBtn");
         clearText();
     }
+    
+    /**
+     *
+     */
+    @Test
+    public void testD_charLimit() {
+        clickOn("#userTxt");
+        write("123456789123456789123456789123456789");
+        verifyThat("#userErrorLbl", isVisible());
+        clickOn("#fullNameTxt");
+        write("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        verifyThat("#fullNameErrorLbl", isVisible());
+        clickOn("#emailTxt");
+        write("123456789123456789123456789123456789@12345678912345678912345678912345.commm");
+        verifyThat("#emailErrorLbl", isVisible());
+        clickOn("#passwordTxt");
+        write("123456789123456789123456789123456789");
+        verifyThat("#passwordErrorLbl", isVisible());
+        clickOn("#repeatPasswordTxt");
+        write("123456789123456789123456789123456789");
+        verifyThat("#repeatPasswordErrorLbl", isVisible());
+        clearText();
+    }
    
     //solo se puede una vez por login
 
+    
     /**
      *
      */
    @Test
-    public void test0Z_RegisterOk(){
+    public void testE_FullNameNumber_SpecialCharacters(){
+        clickOn("#fullNameTxt");
+        write("Jamiro2");
+        clickOn("#emailTxt");
+        verifyThat("#fullNameErrorLbl", isVisible());
+        doubleClickOn("#fullNameTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
+        clickOn("#fullNameTxt");
+        write("Jamiro@");
+        clickOn("#emailTxt");
+        verifyThat("#fullNameErrorLbl", isVisible());
+        doubleClickOn("#fullNameTxt");
+        this.push(CONTROL,A);
+        eraseText(1); 
+    }
+    
+    /**
+     *
+     */
+    @Test
+    public void testF_PasswordMinimunLength() {
+        clickOn("#passwordTxt");
+        write("1234");
+        clickOn("#repeatPasswordTxt");
+        verifyThat("#passwordErrorLbl", isVisible());
+        doubleClickOn("#passwordTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
+    }
+    
+    /**
+     *
+     */
+    @Test
+    public void testG_InvalidEmailFormat() {
+        clickOn("#emailTxt");
+        write("prueba@.");
+        clickOn("#passwordTxt");
+        verifyThat("#emailErrorLbl", isVisible());
+        doubleClickOn("#emailTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
+        write("prueba@.com");
+        clickOn("#passwordTxt");
+        verifyThat("#emailErrorLbl", isVisible());
+        doubleClickOn("#emailTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void testH_RegisterUserExist(){
         clickOn("#userTxt");
         write("Jamiro");
         clickOn("#fullNameTxt");
@@ -112,7 +189,27 @@ public class SignUpControllerTest extends ApplicationTest {
         write("password");
         verifyThat("#registerBtn", isEnabled());
         clickOn("#registerBtn");
+        verifyThat("#userErrorLbl", isVisible());
         clearText();
+    }
+    
+    /**
+     * Make sure to Change the userTxt write by another user to avoid an error if it already exist
+     */
+   @Test
+    public void testI_RegisterOk(){
+        clickOn("#userTxt");
+        write("Jamiro2");
+        clickOn("#fullNameTxt");
+        write("Jamiro Reamie");
+        clickOn("#emailTxt");
+        write("jamiro@gmail.com");
+        clickOn("#passwordTxt");
+        write("password");
+        clickOn("#repeatPasswordTxt");
+        write("password");
+        verifyThat("#registerBtn", isEnabled());
+        clickOn("#registerBtn");
     
     }
 
