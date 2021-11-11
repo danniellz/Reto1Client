@@ -22,7 +22,7 @@
 
         <TextField fx:id="userTxt" layoutX="160.0" layoutY="86.0" prefHeight="25.0" prefWidth="294.0" promptText="example">
             <tooltip>
-                <Tooltip text="Create your username" />
+                <Tooltip text="Insert you user name" />
             </tooltip>
         </TextField>
 
@@ -30,7 +30,7 @@
 
         <TextField fx:id="fullNameTxt" layoutX="160.0" layoutY="128.0" prefHeight="25.0" prefWidth="294.0" promptText="Example Example">
             <tooltip>
-                <Tooltip text="Enter your full name" />
+                <Tooltip text="Full name without numbers or special characters" />
             </tooltip>
         </TextField>
 
@@ -38,7 +38,7 @@
 
         <TextField fx:id="emailTxt" layoutX="160.0" layoutY="170.0" prefHeight="25.0" prefWidth="294.0" promptText="example@example.com">
             <tooltip>
-                <Tooltip text="Enter your email" />
+                <Tooltip text="Enter a valid email" />
             </tooltip>
         </TextField>
 
@@ -46,7 +46,7 @@
 
         <PasswordField fx:id="passwordTxt" layoutX="160.0" layoutY="210.0" prefHeight="25.0" prefWidth="294.0" promptText="********">
             <tooltip>
-                <Tooltip text="Create a password" />
+                <Tooltip text="Enter a minimum of 6 characters" />
             </tooltip>
         </PasswordField>
 
@@ -54,7 +54,7 @@
 
         <PasswordField fx:id="repeatPasswordTxt" layoutX="160.0" layoutY="254.0" prefHeight="25.0" prefWidth="294.0" promptText="********">
             <tooltip>
-                <Tooltip text="Repeat previous password" />
+                <Tooltip text="It must be the same password of above" />
             </tooltip>
         </PasswordField>
         <Hyperlink fx:id="signInHl" layoutX="160.0" layoutY="296.0" text="Do you have an account? Sign In">

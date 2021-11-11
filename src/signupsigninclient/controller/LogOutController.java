@@ -145,7 +145,7 @@ public class LogOutController {
         try {
             LOG.info("Starting SignIn Window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/SignIn.fxml"));
             Parent root = (Parent) loader.load();
             //Get controller
             SignInController signinController = ((SignInController) loader.getController());

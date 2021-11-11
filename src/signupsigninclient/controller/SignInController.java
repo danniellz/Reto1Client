@@ -127,7 +127,7 @@ public class SignInController {
                 try {
                     LOG.info("Starting LogOut Window...");
                     //Load the FXML file
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/LogOut.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/LogOut.fxml"));
                     Parent root = (Parent) loader.load();
                     //Get controller
                     LogOutController logOutController = ((LogOutController) loader.getController());
@@ -219,7 +219,7 @@ public class SignInController {
         try {
             LOG.info("Starting SignUp Window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignUp.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/SignUp.fxml"));
             Parent root = (Parent) loader.load();
             //Get controller
             SignUpController signUpController = ((SignUpController) loader.getController());

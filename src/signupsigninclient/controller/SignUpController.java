@@ -449,11 +449,23 @@ public class SignUpController {
         } catch (UserPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
         } catch (DatabaseNotFoundException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "DataBase not Found", ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Database Connection Error");
+            alert.setContentText("Database is not available, please, try again later");
+            alert.showAndWait();
         } catch (ConnectionException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Connection not found", ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connecion Error");
+            alert.setHeaderText("Server Connection Error");
+            alert.setContentText("Server is not available, please, try again later");
+            alert.showAndWait();
         } catch (MaxConnectionException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Max Connection reached", ex);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Connection Limit Warning");
+            alert.setHeaderText("Max Connection Reached");
+            alert.setContentText("The Server is not available because the limit connection has been reached, please try again later");
+            alert.showAndWait();
         }
     }
 
@@ -482,7 +494,7 @@ public class SignUpController {
         try {
             LOG.info("Starting SignIn window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/SignIn.fxml"));
             Parent root = (Parent) loader.load();
             //Get controller
             SignInController signinController = ((SignInController) loader.getController());
@@ -527,7 +539,7 @@ public class SignUpController {
         try {
             LOG.info("Starting LogIn Window...");
             //Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/SignIn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signupsigninclient/view/SignIn.fxml"));
             Parent root = (Parent) loader.load();
             //Get controller
             SignInController signIn = ((SignInController) loader.getController());

@@ -133,7 +133,9 @@ public class SignUpControllerTest extends ApplicationTest {
         write("Jamiro@");
         clickOn("#emailTxt");
         verifyThat("#fullNameErrorLbl", isVisible());
-        clearText();
+        doubleClickOn("#fullNameTxt");
+        this.push(CONTROL,A);
+        eraseText(1); 
     }
     
     /**
@@ -145,37 +147,36 @@ public class SignUpControllerTest extends ApplicationTest {
         write("1234");
         clickOn("#repeatPasswordTxt");
         verifyThat("#passwordErrorLbl", isVisible());
-        clearText();
+        doubleClickOn("#passwordTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
     }
-    
     
     /**
      *
      */
-   @Test
-    public void testG_RegisterOk(){
-        clickOn("#userTxt");
-        write("Jamiro6");
-        clickOn("#fullNameTxt");
-        write("Jamiro Reamie");
+    @Test
+    public void testG_InvalidEmailFormat() {
         clickOn("#emailTxt");
-        write("jamiro@gmail.com");
+        write("prueba@.");
         clickOn("#passwordTxt");
-        write("password");
-        clickOn("#repeatPasswordTxt");
-        write("password");
-        verifyThat("#registerBtn", isEnabled());
-        clickOn("#registerBtn");
-    
+        verifyThat("#emailErrorLbl", isVisible());
+        doubleClickOn("#emailTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
+        write("prueba@.com");
+        clickOn("#passwordTxt");
+        verifyThat("#emailErrorLbl", isVisible());
+        doubleClickOn("#emailTxt");
+        this.push(CONTROL,A);
+        eraseText(1);
     }
-    
+
     /**
      * 
      */
     @Test
     public void testH_RegisterUserExist(){
-        doubleClickOn("#signUpHl");
-        verifyThat("#signUpPanel", isVisible());
         clickOn("#userTxt");
         write("Jamiro");
         clickOn("#fullNameTxt");
@@ -189,6 +190,27 @@ public class SignUpControllerTest extends ApplicationTest {
         verifyThat("#registerBtn", isEnabled());
         clickOn("#registerBtn");
         verifyThat("#userErrorLbl", isVisible());
+        clearText();
+    }
+    
+    /**
+     * Make sure to Change the userTxt write by another user to avoid an error if it already exist
+     */
+   @Test
+    public void testI_RegisterOk(){
+        clickOn("#userTxt");
+        write("Jamiro2");
+        clickOn("#fullNameTxt");
+        write("Jamiro Reamie");
+        clickOn("#emailTxt");
+        write("jamiro@gmail.com");
+        clickOn("#passwordTxt");
+        write("password");
+        clickOn("#repeatPasswordTxt");
+        write("password");
+        verifyThat("#registerBtn", isEnabled());
+        clickOn("#registerBtn");
+    
     }
 
     /**
