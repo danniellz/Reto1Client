@@ -43,7 +43,7 @@ public class LogOutControllerTest extends ApplicationTest {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
-        write("1234");
+        write("123456");
         clickOn("#loginBtn");
         verifyThat("#logOutPanel", isVisible());
     }

@@ -93,7 +93,7 @@ public class SignInControllerTest extends ApplicationTest {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#passwordTxt");
-        write("Aloy");
+        write("Aloy12");
         clickOn("#loginBtn");
         verifyThat("#errorLbl", isVisible());
         doubleClickOn("#userTxt");
@@ -102,28 +102,12 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
-    
     @Test
-    @Ignore
-    public void testF_ErrorServer() {
+    public void testF_LoginUserConnection() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
-        write("1234");
-        clickOn("#loginBtn");
-        verifyThat(".alert", NodeMatchers.isVisible());
-        doubleClickOn("#userTxt");
-        eraseText(1);
-        doubleClickOn("#passwordTxt");
-        eraseText(1);
-    }
-
-    @Test
-    public void testG_LoginUserConnection() {
-        clickOn("#userTxt");
-        write("pepeUser");
-        clickOn("#passwordTxt");
-        write("1234");
+        write("123456");
         clickOn("#loginBtn");
         verifyThat("#logOutPanel", isVisible());
     }
