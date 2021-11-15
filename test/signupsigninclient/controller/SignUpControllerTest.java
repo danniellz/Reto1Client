@@ -24,7 +24,7 @@ import signupsigninclient.SignUpSignInClient;
 
 /**
  *
- * @author JonY
+ * @author Jonathan Viñan, Aritz Arrieta
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignUpControllerTest extends ApplicationTest {

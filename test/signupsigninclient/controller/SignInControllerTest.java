@@ -14,15 +14,15 @@ import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import org.testfx.matcher.control.LabeledMatchers;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import signupsigninclient.SignUpSignInClient;
 
 /**
  *
- * @author JonY
+ * @author Jonathan Viñan
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignInControllerTest extends ApplicationTest {
@@ -43,9 +43,7 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#passwordTxt", hasText(""));
         verifyThat("#loginBtn", isEnabled());
     }
-    
-        
-    
+
     @Test
     public void testB_VisibleWindowSignUp() {
         clickOn("#signUpHl");
@@ -72,7 +70,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testD_UserAndPasswordError() {
+    public void testD_CamposNoInformadosError() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#loginBtn");
@@ -89,13 +87,27 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
+    public void testE_PasswordError() {
+        clickOn("#userTxt");
+        write("Pepe");
+        clickOn("#passwordTxt");
+        write("Aloy12");
+        clickOn("#loginBtn");
+        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorret username"));
+        doubleClickOn("#userTxt");
+        eraseText(1);
+        doubleClickOn("#passwordTxt");
+        eraseText(1);
+    }
+
+    @Test
     public void testE_UserNotExist() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#passwordTxt");
-        write("Aloy12");
+        write("aloy10");
         clickOn("#loginBtn");
-        verifyThat("#errorLbl", isVisible());
+        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorrect passoword"));
         doubleClickOn("#userTxt");
         eraseText(1);
         doubleClickOn("#passwordTxt");
