@@ -2,9 +2,10 @@ package signupsigninclient.controller;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
+import exceptions.IncorrectPasswordException;
 import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserPasswordException;
+import exceptions.UserNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -85,10 +86,10 @@ public class SignInController {
             userTxt.textProperty().addListener(this::handleUserControl);
             passwordTxt.textProperty().addListener(this::handlePasswordControl);
             errorLbl.setVisible(false);
-            errorLbl.setText("Incorrect User or Password");
             errorLbl.setStyle("-fx-text-fill: red");
             //Show window (asynchronous)
             stage.show();
+            LOG.info("CURRENT WINDOW: SignIn");
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Stage init error", ex);
         }
@@ -111,6 +112,9 @@ public class SignInController {
             if ((username.equals("") || password.equals(""))
                     || (username.equals("") && password.equals(""))) {
                 LOG.info("Null Value In User or Password Field");
+
+                //Show Error label for Empty fields
+                errorLbl.setText("The fields have to be filled");
                 errorLbl.setVisible(true);
                 userTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
                 passwordTxt.setStyle("-fx-border-color: #DC143C	; -fx-border-width: 1.5px ;");
@@ -119,11 +123,15 @@ public class SignInController {
                 User user = new User();
                 user.setLogin(username);
                 user.setPassword(password);
-                Signable sign = new SignableFactory().getSignable();
 
+                //Get the SignableImplement from the factory and save it into the Signable interface
+                Signable sign = SignableFactory.getSignable();
+
+                //Save user data and send it to the signIn method then return the user object with all the data
                 user = sign.signIn(user);
                 LOG.info("User data retrieved!");
 
+                //Open LogOut Window if the SignIn Process is well
                 try {
                     LOG.info("Starting LogOut Window...");
                     //Load the FXML file
@@ -140,32 +148,48 @@ public class SignInController {
                     LOG.log(Level.SEVERE, "Error Starting LogOut Window", ex);
                 }
             }
-        } catch (UserPasswordException ex) {
+        } catch (UserNotFoundException ex) {
+            //Show an error label if the username is incorrect, LOG SEVERE included with Exception
+            errorLbl.setText("Incorrect Username");
+            errorLbl.setVisible(true);
+            userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
+            passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
+        } catch (IncorrectPasswordException ex) {
+            //Show an error label if the password is incorrect, LOG SEVERE included with Exception
+            errorLbl.setText("Incorrect Password");
             errorLbl.setVisible(true);
             userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
             passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
         } catch (ConnectionException ex) {
+            //Show an error Alert if there is not connection with the server, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connecion Error");
             alert.setHeaderText("Server Connection Error");
             alert.setContentText("Server is not available, please, try again later");
             alert.showAndWait();
         } catch (MaxConnectionException ex) {
+            //Show an error Alert if the Max connection with the server is reached, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Connection Limit Warning");
             alert.setHeaderText("Max Connection Reached");
             alert.setContentText("The Server is not available because the limit connection has been reached, please try again later");
             alert.showAndWait();
         } catch (DatabaseNotFoundException ex) {
+            //Show an error Alert if there is a problem with the DataBase, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Database Error");
             alert.setHeaderText("Database Connection Error");
             alert.setContentText("Database is not available, please, try again later");
             alert.showAndWait();
         } catch (UserAlreadyExistException ex) {
-            LOG.log(Level.SEVERE, "User already exist", ex);
+            LOG.log(Level.SEVERE, "User already exist Error", ex);
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Login Button Pressed Error", ex);
+            //Show an error Alert if an unknow error occured, LOG SEVERE included with Exception
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Unknown error");
+            alert.setContentText("An unknow error has occured, please, try again later");
+            alert.showAndWait();
         }
     }
 
@@ -181,12 +205,13 @@ public class SignInController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("¿Are you sure you want to exit?");
             alert.setTitle("Exit");
+            //Close if press OK, cancel if not
             Optional<ButtonType> option = alert.showAndWait();
             if (option.get() == ButtonType.OK) {
-                LOG.info("Closing...");
+                LOG.info("Accept Button Press - Closing...");
                 Platform.exit();
             } else {
-                LOG.info("Closing Canceled");
+                LOG.info("Cancel Button Pressed - Closing Canceled");
                 //Cancel the event process
                 closeEvent.consume();
             }
@@ -202,6 +227,7 @@ public class SignInController {
      */
     private void handleSignUpHyperLink(ActionEvent HyperLinkPress) {
         try {
+            //Call the method to open the SignUp Window
             LOG.info("SignUp Hyper Link Pressed");
             startSignUpWindow();
         } catch (IOException ex) {
