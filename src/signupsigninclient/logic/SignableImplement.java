@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
 import message.Accion;
 import message.Message;
 import signable.Signable;
@@ -157,6 +158,15 @@ public class SignableImplement implements Signable {
                         throw new MaxConnectionException();
                     case OK:
                         LOG.info("Process gone Well!");
+                        
+                        //alerta de confirmar Usuarios
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("User registered");
+                        alert.setHeaderText("User Register");
+                        alert.setContentText("The User regitered sucessfully");
+                        alert.showAndWait();
+                        
+                       
                         break;
                 }
 
