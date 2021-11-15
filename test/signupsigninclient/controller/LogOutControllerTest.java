@@ -46,15 +46,25 @@ public class LogOutControllerTest extends ApplicationTest {
         write("123456");
         clickOn("#loginBtn");
         verifyThat("#logOutPanel", isVisible());
+        verifyThat("#messageLbl", isVisible());
     }
     
     /**
-     * Method to test that click in log out returns to sign in window
+     * Method to test that click in log out opens confirm window
      */
     @Test
-    public void test01_logOut() {
+    public void test01_logOutAlert() {
         clickOn("#file");
         clickOn("#logOutItem");
+        verifyThat("¿Are you sure you want to log out?", isVisible());
+    }
+    
+    /**
+     * Method to test that click in dialog ok buton returns to sign in window
+     */
+    @Test
+    public void test02_logOut() {
+        clickOn("Aceptar");
         verifyThat("#signInPanel", isVisible());
     }
     
