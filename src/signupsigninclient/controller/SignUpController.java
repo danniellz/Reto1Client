@@ -322,8 +322,8 @@ public class SignUpController {
     }
 
     /**
-     *Control de cambio de foco
-     * checks if the password textField has a minimum of 6 chars
+     * Control de cambio de foco checks if the password textField has a minimum
+     * of 6 chars
      *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
@@ -357,9 +357,8 @@ public class SignUpController {
     }
 
     /**
-     * Control de cambio de foco
-     * checks if the password textField and the repeatpassword textfield has the
-     * same text
+     * Control de cambio de foco checks if the password textField and the
+     * repeatpassword textfield has the same text
      *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
@@ -413,6 +412,7 @@ public class SignUpController {
      */
     private void disableButtonWhenTextFieldsEmpty() {
         LOG.info("Verify that button");
+        //Se comprueba cuando el boton debe estar desabilitado
         registerBtn.disableProperty().bind(
                 userTxt.textProperty().isEmpty()
                         .or(fullNameTxt.textProperty().isEmpty())
@@ -420,7 +420,6 @@ public class SignUpController {
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
                         //errorLbl
-
                         .or(userErrorLbl.visibleProperty())
                         .or(fullNameErrorLbl.visibleProperty())
                         .or(emailErrorLbl.visibleProperty())
@@ -438,7 +437,7 @@ public class SignUpController {
         LOG.info("Clicked on button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
-
+       
         User user = new User();
         user.setLogin(userTxt.getText());
         user.setEmail(emailTxt.getText());
@@ -446,6 +445,7 @@ public class SignUpController {
         user.setPassword(passwordTxt.getText());
 
         try {
+          
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
 

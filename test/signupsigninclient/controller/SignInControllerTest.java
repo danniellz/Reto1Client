@@ -14,6 +14,7 @@ import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -51,7 +52,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testC_UserAndPassword50Characters() {
+    public void testC_UserAndPassword25Characters() {
         clickOn("#signInHl");
         verifyThat("#signInPanel", isVisible());
         clickOn("#userTxt");
@@ -122,6 +123,21 @@ public class SignInControllerTest extends ApplicationTest {
         write("123456");
         clickOn("#loginBtn");
         verifyThat("#logOutPanel", isVisible());
+    }
+
+    @Ignore
+    @Test
+    void testG_ErrorConection() {
+        clickOn("#userTxt");
+        write("pepeUser");
+        clickOn("#passwordTxt");
+        write("1234");
+        clickOn("#loginBtn");
+        verifyThat(".alert", NodeMatchers.isVisible());
+        doubleClickOn("#userTxt");
+        eraseText(1);
+        doubleClickOn("#passwordTxt");
+        eraseText(1);
     }
 
 }
