@@ -57,6 +57,7 @@ public class LogOutController {
      * Initialize window
      *
      * @param root Contains the FXML
+     * @param user
      */
     public void initStage(Parent root, User user) {
         try {
