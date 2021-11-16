@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -15,6 +16,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import user.User;
@@ -57,6 +59,7 @@ public class LogOutController {
      * Initialize window
      *
      * @param root Contains the FXML
+     * @param user
      */
     public void initStage(Parent root, User user) {
         try {
@@ -73,6 +76,7 @@ public class LogOutController {
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
             messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
+            messageLbl.setTextAlignment(TextAlignment.CENTER);
             //Show window (asynchronous)
             stage.show();
         } catch (Exception e) {
@@ -113,8 +117,20 @@ public class LogOutController {
      */
     public void handleExit(ActionEvent closeEvent) {
         try {
-            LOG.info("Closing...");
-            Platform.exit();
+            LOG.info("Exit button clicked");
+            LOG.info("Confirm Closing");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("¿Are you sure you want to exit?");
+            alert.setTitle("Exit");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK) {
+                LOG.info("Closing...");
+                Platform.exit();
+            } else {
+                LOG.info("Closing Canceled");
+                //Cancel the event process
+                closeEvent.consume();
+            }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Close request error", e);
         }
@@ -127,9 +143,20 @@ public class LogOutController {
      */
     public void handleLogOut(ActionEvent logOutEvent) {
         try {
-            LOG.info("Logging out...");
-
-            startSignInWindow(stage);
+            LOG.info("Log Out button clicked");
+            LOG.info("Confirm Log Out");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("¿Are you sure you want to log out?");
+            alert.setTitle("Log Out");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK) {
+                LOG.info("Logging out...");
+                startSignInWindow(stage);
+            } else {
+                LOG.info("Log Out Canceled");
+                //Cancel the event process
+                logOutEvent.consume();
+            }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Log Out error", ex);
         }

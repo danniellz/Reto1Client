@@ -2,9 +2,10 @@ package signupsigninclient.logic;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
+import exceptions.IncorrectPasswordException;
 import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserPasswordException;
+import exceptions.UserNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,6 +13,7 @@ import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
 import message.Accion;
 import message.Message;
 import signable.Signable;
@@ -33,8 +35,9 @@ public class SignableImplement implements Signable {
      * Request a Sign In
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException if the user or password are
-     * wrong, error message
+     * @throws exceptions.UserNotFoundException if the user doesn't exist, error
+     * @throws exceptions.IncorrectPasswordException if the password is
+     * incorrect, error
      * @throws exceptions.UserAlreadyExistException if the user already exist,
      * error message
      * @throws exceptions.DatabaseNotFoundException if an error occurred with
@@ -46,7 +49,7 @@ public class SignableImplement implements Signable {
      * @return the User object with all data form DB
      */
     @Override
-    public User signIn(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+    public User signIn(User user) throws UserNotFoundException, IncorrectPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
         try {
             LOG.log(Level.INFO, "Starting SignIn Process for {0}...", user.getLogin());
             Message msg = new Message();
@@ -66,20 +69,21 @@ public class SignableImplement implements Signable {
      * Request a Sign Up
      *
      * @param user the user object containing the user data
-     * @throws exceptions.UserPasswordException if the user or password are
-     * wrong, error message
      * @throws exceptions.UserAlreadyExistException if the user already exist,
-     * error message
-     * @throws exceptions.DatabaseNotFoundException if an error occurred with
-     * the DB, error message
+     * error message the DB, error message
+     * @throws exceptions.DatabaseNotFoundException if there is an error with
+     * the Database, error
      * @throws exceptions.ConnectionException if an error occurred between the
-     * client an server, error message
-     * @throws exceptions.MaxConnectionException if there is no more thread
-     * available, error message
+     * client an server, error message available, error message
+     * @throws exceptions.MaxConnectionException if the max coneection is
+     * reached, error
+     * @throws exceptions.IncorrectPasswordException if the password is
+     * incorrect, error
+     * @throws exceptions.UserNotFoundException if the user doesn't exist, error
      * @return a user object
      */
     @Override
-    public User signUp(User user) throws UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException {
+    public User signUp(User user) throws UserAlreadyExistException, DatabaseNotFoundException, ConnectionException, MaxConnectionException, IncorrectPasswordException, UserNotFoundException {
         try {
             LOG.log(Level.INFO, "Starting SignUp Process for {0}...", user.getLogin());
             Message msg = new Message();
@@ -103,8 +107,8 @@ public class SignableImplement implements Signable {
      * @param message the message class contains the user and the request type
      * @throws exceptions.ConnectionException if an error occurred between the
      * client an server, error message
-     * @throws exceptions.UserPasswordException if the user or password are
-     * wrong, error message
+     * @throws exceptions.UserNotFoundException
+     * @throws exceptions.IncorrectPasswordException
      * @throws exceptions.UserAlreadyExistException if the user already exist,
      * error message
      * @throws exceptions.DatabaseNotFoundException if an error occurred with
@@ -115,7 +119,7 @@ public class SignableImplement implements Signable {
      * do not exist
      * @return A message with the User object containing the data from DB
      */
-    public User serverConnection(Message message) throws ConnectionException, UserPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ClassNotFoundException, MaxConnectionException {
+    public User serverConnection(Message message) throws ConnectionException, UserNotFoundException, IncorrectPasswordException, UserAlreadyExistException, DatabaseNotFoundException, ClassNotFoundException, MaxConnectionException {
         //local host, data can be change in the configuration file (config.properties)
         final int PORT = Integer.parseInt(ResourceBundle.getBundle("signupsigninclient.file/config").getString("PORT"));
         final String SERVER = ResourceBundle.getBundle("signupsigninclient.file/config").getString("SERVER");
@@ -145,8 +149,10 @@ public class SignableImplement implements Signable {
 
                 //Receive the Accion message from Server to know how went the process
                 switch (mes.getAccion()) {
-                    case INVALIDUSERORPASSWORD:
-                        throw new UserPasswordException();
+                    case USERNOTFOUND:
+                        throw new UserNotFoundException();
+                    case INVALIDPASSWORD:
+                        throw new IncorrectPasswordException();
                     case USERALREADYEXIST:
                         throw new UserAlreadyExistException();
                     case DATABASENOTFOUND:
@@ -157,6 +163,15 @@ public class SignableImplement implements Signable {
                         throw new MaxConnectionException();
                     case OK:
                         LOG.info("Process gone Well!");
+                        
+                        //alerta de confirmar Usuarios
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("User registered");
+                        alert.setHeaderText("User Register");
+                        alert.setContentText("The User regitered sucessfully");
+                        alert.showAndWait();
+                        
+                       
                         break;
                 }
 

@@ -15,7 +15,7 @@ public class SignableFactory {
      *
      * @return a new SignableImplement
      */
-    public Signable getSignable() {
+    public static Signable getSignable() {
         return new SignableImplement();
     }
 }

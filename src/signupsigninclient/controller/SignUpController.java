@@ -2,9 +2,10 @@ package signupsigninclient.controller;
 
 import exceptions.ConnectionException;
 import exceptions.DatabaseNotFoundException;
+import exceptions.IncorrectPasswordException;
 import exceptions.MaxConnectionException;
 import exceptions.UserAlreadyExistException;
-import exceptions.UserPasswordException;
+import exceptions.UserNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -169,6 +170,10 @@ public class SignUpController {
                     userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
                 }
+                //Control empty spaces
+            if (userTxt.getText().contains(" ")) {
+                userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+            }
             }
         });
         //FULLNAME field control
@@ -419,6 +424,7 @@ public class SignUpController {
                         .or(emailTxt.textProperty().isEmpty())
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
+                       
                         //errorLbl
                         .or(userErrorLbl.visibleProperty())
                         .or(fullNameErrorLbl.visibleProperty())
@@ -459,8 +465,10 @@ public class SignUpController {
             userErrorLbl.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
             userErrorLbl.setVisible(true);
             userErrorLbl.setStyle("-fx-text-fill: #DC143C");
-        } catch (UserPasswordException ex) {
-            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User no Found ", ex);
+        } catch (UserNotFoundException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User not Found ", ex);
+        } catch (IncorrectPasswordException ex) {
+            Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorrect Password", ex);
         } catch (DatabaseNotFoundException ex) {
             LOG.info("DatabaseNotFoundException");
             Alert alert = new Alert(Alert.AlertType.ERROR);

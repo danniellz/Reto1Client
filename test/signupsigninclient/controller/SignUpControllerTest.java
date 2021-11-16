@@ -5,6 +5,7 @@
  */
 package signupsigninclient.controller;
 
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.CONTROL;
@@ -24,7 +25,7 @@ import signupsigninclient.SignUpSignInClient;
 
 /**
  *
- * @author Jonathan Viñan, Aritz Arrieta
+ * @author Aritz Arrieta, Daniel Brizuela y Jonathan Viñan
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignUpControllerTest extends ApplicationTest {
@@ -74,7 +75,8 @@ public class SignUpControllerTest extends ApplicationTest {
     /**
      *
      */
-    @Test
+   
+     @Test
     public void testC_RegisterIsDisabled() {
         clickOn("#userTxt");
         write("123456789123456789123456789123456789");
@@ -94,7 +96,7 @@ public class SignUpControllerTest extends ApplicationTest {
     /**
      *
      */
-    @Test
+     @Test
     public void testD_charLimit() {
         clickOn("#userTxt");
         write("123456789123456789123456789123456789");
@@ -120,7 +122,7 @@ public class SignUpControllerTest extends ApplicationTest {
     /**
      *
      */
-   @Test
+     @Test
     public void testE_FullNameNumber_SpecialCharacters(){
         clickOn("#fullNameTxt");
         write("Jamiro2");
@@ -141,7 +143,7 @@ public class SignUpControllerTest extends ApplicationTest {
     /**
      *
      */
-    @Test
+     @Test
     public void testF_PasswordMinimunLength() {
         clickOn("#passwordTxt");
         write("1234");
@@ -175,8 +177,9 @@ public class SignUpControllerTest extends ApplicationTest {
     /**
      * 
      */
-    @Test
+     @Test
     public void testH_RegisterUserExist(){
+        
         clickOn("#userTxt");
         write("Jamiro");
         clickOn("#fullNameTxt");
@@ -193,13 +196,14 @@ public class SignUpControllerTest extends ApplicationTest {
         clearText();
     }
     
-    /**
-     * Make sure to Change the userTxt write by another user to avoid an error if it already exist
-     */
+   
    @Test
     public void testI_RegisterOk(){
         clickOn("#userTxt");
-        write("Jamiro2");
+        Random rn = new Random();
+        int numR= rn.nextInt(200);
+        
+        write("Jamiro"+numR);
         clickOn("#fullNameTxt");
         write("Jamiro Reamie");
         clickOn("#emailTxt");
@@ -210,6 +214,9 @@ public class SignUpControllerTest extends ApplicationTest {
         write("password");
         verifyThat("#registerBtn", isEnabled());
         clickOn("#registerBtn");
+        verifyThat("The User regitered sucessfully", isVisible());
+        clickOn("Aceptar");
+        verifyThat("#signInPanel", isVisible());
     
     }
 
