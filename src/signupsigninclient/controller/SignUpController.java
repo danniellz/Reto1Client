@@ -169,6 +169,10 @@ public class SignUpController {
                     userErrorLbl.setVisible(false);
                     userErrorLbl.setStyle(" ");
                 }
+                //Control empty spaces
+            if (userTxt.getText().contains(" ")) {
+                userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+            }
             }
         });
         //FULLNAME field control
@@ -409,6 +413,7 @@ public class SignUpController {
                         .or(emailTxt.textProperty().isEmpty())
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
+                       
                         //errorLbl
 
                         .or(userErrorLbl.visibleProperty())
