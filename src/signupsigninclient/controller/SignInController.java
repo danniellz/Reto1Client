@@ -184,12 +184,13 @@ public class SignInController {
         } catch (UserAlreadyExistException ex) {
             LOG.log(Level.SEVERE, "User already exist Error", ex);
         } catch (Exception ex) {
-            //Show an error Alert if an unknow error occured, LOG SEVERE included with Exception
+            //Show an error Alert if an unknow error occured
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Unknown error");
             alert.setContentText("An unknow error has occured, please, try again later");
             alert.showAndWait();
+            LOG.log(Level.SEVERE, "An Unknown error has occurred", ex);
         }
     }
 
@@ -201,7 +202,7 @@ public class SignInController {
      */
     private void handleCloseRequest(WindowEvent closeEvent) {
         try {
-            LOG.info("Confirm Closing");
+            LOG.info("Close Confirmation Window has Opened");
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("¿Are you sure you want to exit?");
             alert.setTitle("Exit");
@@ -275,6 +276,7 @@ public class SignInController {
             //Control empty spaces
             if (userTxt.getText().contains(" ")) {
                 userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+                LOG.warning("Spaces are not allowed in User");
             }
             //Show error label
             errorLbl.setVisible(false);
@@ -302,6 +304,7 @@ public class SignInController {
             //Control empty spaces
             if (passwordTxt.getText().contains(" ")) {
                 passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
+                LOG.warning("Spaces are not allowed in Password");
             }
             //Show error label
             errorLbl.setVisible(false);
