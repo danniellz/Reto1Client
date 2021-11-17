@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsigninclient.controller;
 
 import java.util.concurrent.TimeoutException;
@@ -20,6 +15,7 @@ import signupsigninclient.SignUpSignInClient;
  * Test class for LogOutController class
  * 
  * @author Mikel Matilla
+ * @version 1.0
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogOutControllerTest extends ApplicationTest {

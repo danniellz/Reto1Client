@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -143,6 +142,7 @@ public class LogOutController {
      */
     public void handleLogOut(ActionEvent logOutEvent) {
         try {
+            //Pressing the LogOut option will show an Alert to confirm it
             LOG.info("Log Out button clicked");
             LOG.info("Confirm Log Out");
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

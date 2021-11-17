@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package signupsigninclient.controller;
 
 import java.util.concurrent.TimeoutException;
@@ -22,8 +17,10 @@ import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import signupsigninclient.SignUpSignInClient;
 
 /**
- *
+ * Test for the SignIn Window IT
+ * 
  * @author Jonathan Viñan
+ * @version 1.0
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignInControllerTest extends ApplicationTest {
@@ -71,7 +68,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testD_CamposNoInformadosError() {
+    public void testD_EmptyFields() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#loginBtn");
@@ -85,16 +82,19 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#errorLbl", isVisible());
         doubleClickOn("#passwordTxt");
         eraseText(1);
+        
+        clickOn("#loginBtn");
+        
     }
 
     @Test
     public void testE_PasswordError() {
         clickOn("#userTxt");
-        write("Pepe");
+        write("pepeUser");
         clickOn("#passwordTxt");
         write("Aloy12");
         clickOn("#loginBtn");
-        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorret username"));
+        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorrect Password"));
         doubleClickOn("#userTxt");
         eraseText(1);
         doubleClickOn("#passwordTxt");
@@ -102,13 +102,13 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testE_UserNotExist() {
+    public void testF_UserNotExist() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#passwordTxt");
         write("aloy10");
         clickOn("#loginBtn");
-        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorrect passoword"));
+        verifyThat("#errorLbl", LabeledMatchers.hasText("Incorrect Username"));
         doubleClickOn("#userTxt");
         eraseText(1);
         doubleClickOn("#passwordTxt");
@@ -116,7 +116,7 @@ public class SignInControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testF_LoginUserConnection() {
+    public void testG_LoginUserConnection() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
@@ -125,19 +125,18 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#logOutPanel", isVisible());
     }
 
+    /**
+     * Test if the is server off
+     */
     @Ignore
     @Test
-    void testG_ErrorConection() {
+    public void testH_ErrorConection() {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
         write("1234");
         clickOn("#loginBtn");
         verifyThat(".alert", NodeMatchers.isVisible());
-        doubleClickOn("#userTxt");
-        eraseText(1);
-        doubleClickOn("#passwordTxt");
-        eraseText(1);
     }
 
 }
