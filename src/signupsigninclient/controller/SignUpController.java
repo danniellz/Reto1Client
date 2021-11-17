@@ -38,6 +38,7 @@ import user.User;
  * FXML Controller class the view SingUp
  *
  * @author Jonathan Viñan , Aritz Arrieta
+ * @version 1.0
  */
 public class SignUpController {
 
@@ -171,9 +172,9 @@ public class SignUpController {
                     userErrorLbl.setStyle(" ");
                 }
                 //Control empty spaces
-            if (userTxt.getText().contains(" ")) {
-                userTxt.setText(userTxt.getText().replaceAll(" ", ""));
-            }
+                if (userTxt.getText().contains(" ")) {
+                    userTxt.setText(userTxt.getText().replaceAll(" ", ""));
+                }
             }
         });
         //FULLNAME field control
@@ -424,7 +425,6 @@ public class SignUpController {
                         .or(emailTxt.textProperty().isEmpty())
                         .or(passwordTxt.textProperty().isEmpty())
                         .or(repeatPasswordTxt.textProperty().isEmpty())
-                       
                         //errorLbl
                         .or(userErrorLbl.visibleProperty())
                         .or(fullNameErrorLbl.visibleProperty())
@@ -443,7 +443,7 @@ public class SignUpController {
         LOG.info("Clicked on button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
-       
+
         User user = new User();
         user.setLogin(userTxt.getText());
         user.setEmail(emailTxt.getText());
@@ -451,14 +451,23 @@ public class SignUpController {
         user.setPassword(passwordTxt.getText());
 
         try {
-          
+
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
 
+            //Show an alert confirming the user correct registration
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("SignUp");
+            alert.setHeaderText("Sign Up Confirmed!");
+            alert.setContentText("User registered successfully!");
+            alert.showAndWait();
+
+            //Open SignIn window after a correct registration
             openSignInWindow();
             LOG.info("User Registered, returning to SignIn window...");
 
         } catch (UserAlreadyExistException ex) {
+            //Show an error label if the user already exist, LOG SEVERE included with Exception
             LOG.info("UserAlreadyExistException");
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
             userErrorLbl.setText("User already exist, try another");
@@ -470,6 +479,7 @@ public class SignUpController {
         } catch (IncorrectPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorrect Password", ex);
         } catch (DatabaseNotFoundException ex) {
+            //Show an error Alert if there is a problem with the DataBase, LOG SEVERE included with Exception
             LOG.info("DatabaseNotFoundException");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Database Error");
@@ -477,6 +487,7 @@ public class SignUpController {
             alert.setContentText("Database is not available, please, try again later");
             alert.showAndWait();
         } catch (ConnectionException ex) {
+            //Show an error Alert if there is not a connection with the Server, LOG SEVERE included with Exception
             LOG.info("ConnectionException");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connecion Error");
@@ -484,6 +495,7 @@ public class SignUpController {
             alert.setContentText("Server is not available, please, try again later");
             alert.showAndWait();
         } catch (MaxConnectionException ex) {
+            //Show an error Alert if the max connection is reached, LOG SEVERE included with Exception
             LOG.info("MaxConnectionException");
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Connection Limit Warning");

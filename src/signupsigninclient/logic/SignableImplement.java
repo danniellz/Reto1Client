@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Alert;
 import message.Accion;
 import message.Message;
 import signable.Signable;
@@ -59,7 +58,7 @@ public class SignableImplement implements Signable {
             user = serverConnection(msg);
 
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, "Class not found error in signIn - SignableImplement", ex);
         }
 
         return user;
@@ -93,7 +92,7 @@ public class SignableImplement implements Signable {
             user = serverConnection(msg);
 
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SignableImplement.class.getName()).log(Level.SEVERE, "Class not found error in signUp - SignableImplement", ex);
         }
 
         return user;
@@ -129,6 +128,7 @@ public class SignableImplement implements Signable {
         try {
             LOG.info("Initializing Client...");
             try {
+                //Connect with Server
                 Socket clientSc = new Socket(SERVER, PORT);
                 LOG.info("Client > Initialized");
                 //Send message
@@ -163,15 +163,6 @@ public class SignableImplement implements Signable {
                         throw new MaxConnectionException();
                     case OK:
                         LOG.info("Process gone Well!");
-                        
-                        //alerta de confirmar Usuarios
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("User registered");
-                        alert.setHeaderText("User Register");
-                        alert.setContentText("The User regitered sucessfully");
-                        alert.showAndWait();
-                        
-                       
                         break;
                 }
 
