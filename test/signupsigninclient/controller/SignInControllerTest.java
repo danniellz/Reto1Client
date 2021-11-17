@@ -69,22 +69,25 @@ public class SignInControllerTest extends ApplicationTest {
 
     @Test
     public void testD_EmptyFields() {
+        //User field empty
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#loginBtn");
-        verifyThat("#errorLbl", isVisible());
+        verifyThat("#errorLbl", LabeledMatchers.hasText("The fields have to be filled"));
         doubleClickOn("#userTxt");
         eraseText(1);
 
+        //Password field empty
         clickOn("#passwordTxt");
         write("Aloy");
         clickOn("#loginBtn");
-        verifyThat("#errorLbl", isVisible());
+        verifyThat("#errorLbl", LabeledMatchers.hasText("The fields have to be filled"));
         doubleClickOn("#passwordTxt");
         eraseText(1);
         
+        //All empty
         clickOn("#loginBtn");
-        
+        verifyThat("#errorLbl", LabeledMatchers.hasText("The fields have to be filled"));
     }
 
     @Test

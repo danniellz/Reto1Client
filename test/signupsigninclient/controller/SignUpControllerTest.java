@@ -205,7 +205,7 @@ public class SignUpControllerTest extends ApplicationTest {
         write("password");
         verifyThat("#registerBtn", isEnabled());
         clickOn("#registerBtn");
-        verifyThat("User registered sucessfully", isVisible());
+        verifyThat("User registered successfully!", isVisible());
         clickOn("Aceptar");
         verifyThat("#signInPanel", isVisible());
 
