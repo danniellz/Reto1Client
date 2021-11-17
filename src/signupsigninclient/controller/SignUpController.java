@@ -157,6 +157,7 @@ public class SignUpController {
         userTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //Control of 25 characters
                 if (userTxt.getText().length() > 25) {
                     LOG.warning("25 characters limit reached in User field");
                     userErrorLbl.setText("25 characters limit reached");
@@ -179,6 +180,7 @@ public class SignUpController {
         fullNameTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //control of 25 characters
                 if (fullNameTxt.getText().length() > 25) {
                     LOG.warning("25 characters limit reached in FullName field");
                     fullNameErrorLbl.setText("25 characters limit reached");
@@ -196,6 +198,7 @@ public class SignUpController {
         emailTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //control of 50 characters
                 if (emailTxt.getText().length() > 50) {
                     LOG.warning("50 characters limit reached in Email field");
                     emailErrorLbl.setText("50 characters limit reached");
@@ -215,6 +218,7 @@ public class SignUpController {
         passwordTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //control of 25 characters
                 if (passwordTxt.getText().length() > 25) {
                     LOG.warning("25 characters limit reached in Password field");
                     passwordErrorLbl.setText("25 characters limit reached");
@@ -240,6 +244,7 @@ public class SignUpController {
         repeatPasswordTxt.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //control of 25 characters 
                 if (repeatPasswordTxt.getText().length() > 25) {
                     LOG.warning("25 characters limit reached in RepeatPassword field");
                     repeatPasswordErrorLbl.setText("25 characters limit reached");
@@ -295,6 +300,7 @@ public class SignUpController {
      */
     private void domainControl(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (oldValue) {
+            LOG.info("");
             Matcher matcher = VALIDEMAIL.matcher(emailTxt.getText());
             if (matcher.find()) {
                 emailErrorLbl.setVisible(false);
@@ -321,7 +327,8 @@ public class SignUpController {
     }
 
     /**
-     * checks if the password textField has a minimum of 6 chars
+     * Control de cambio de foco checks if the password textField has a minimum
+     * of 6 chars
      *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
@@ -329,9 +336,11 @@ public class SignUpController {
      *
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        //control valida cuando el foco se cambia
         if (newValue) {
             LOG.info("Focus gained on Password field");
         } else if (oldValue) {
+            LOG.info("Focus in Password field");
             if (passwordTxt.getText().length() < 6) {
                 passwordErrorLbl.setText("A minimum of 6 characters is required");
                 String password = passwordTxt.getText();
@@ -353,8 +362,8 @@ public class SignUpController {
     }
 
     /**
-     * checks if the password textField and the repeatpassword textfield has the
-     * same text
+     * Control de cambio de foco checks if the password textField and the
+     * repeatpassword textfield has the same text
      *
      * @param observable is the field that have the focus action
      * @param oldValue is a boolean to know where was the focus
@@ -364,7 +373,7 @@ public class SignUpController {
         if (newValue) {
             LOG.info("Focus gained on Repeat Password field");
         } else if (oldValue) {
-
+            LOG.info("Focus in RepeatPassword field");
             if (!passwordTxt.getText().equals(repeatPasswordTxt.getText())) {
                 repeatPasswordErrorLbl.setText("Passwords don't match");
                 repeatPasswordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
@@ -407,6 +416,8 @@ public class SignUpController {
      * happenes.
      */
     private void disableButtonWhenTextFieldsEmpty() {
+        LOG.info("Verify that button");
+        //Se comprueba cuando el boton debe estar desabilitado
         registerBtn.disableProperty().bind(
                 userTxt.textProperty().isEmpty()
                         .or(fullNameTxt.textProperty().isEmpty())
@@ -415,7 +426,6 @@ public class SignUpController {
                         .or(repeatPasswordTxt.textProperty().isEmpty())
                        
                         //errorLbl
-
                         .or(userErrorLbl.visibleProperty())
                         .or(fullNameErrorLbl.visibleProperty())
                         .or(emailErrorLbl.visibleProperty())
@@ -433,7 +443,7 @@ public class SignUpController {
         LOG.info("Clicked on button register");
         boolean errorPassEqual = false;
         errorPassEqual = checkPasswordsEqual();
-
+       
         User user = new User();
         user.setLogin(userTxt.getText());
         user.setEmail(emailTxt.getText());
@@ -441,6 +451,7 @@ public class SignUpController {
         user.setPassword(passwordTxt.getText());
 
         try {
+          
             Signable sign = new SignableFactory().getSignable();
             sign.signUp(user);
 
@@ -448,6 +459,7 @@ public class SignUpController {
             LOG.info("User Registered, returning to SignIn window...");
 
         } catch (UserAlreadyExistException ex) {
+            LOG.info("UserAlreadyExistException");
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "User Already exist", ex);
             userErrorLbl.setText("User already exist, try another");
             userErrorLbl.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px ;");
@@ -458,18 +470,21 @@ public class SignUpController {
         } catch (IncorrectPasswordException ex) {
             Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, "Incorrect Password", ex);
         } catch (DatabaseNotFoundException ex) {
+            LOG.info("DatabaseNotFoundException");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Database Error");
             alert.setHeaderText("Database Connection Error");
             alert.setContentText("Database is not available, please, try again later");
             alert.showAndWait();
         } catch (ConnectionException ex) {
+            LOG.info("ConnectionException");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connecion Error");
             alert.setHeaderText("Server Connection Error");
             alert.setContentText("Server is not available, please, try again later");
             alert.showAndWait();
         } catch (MaxConnectionException ex) {
+            LOG.info("MaxConnectionException");
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Connection Limit Warning");
             alert.setHeaderText("Max Connection Reached");
