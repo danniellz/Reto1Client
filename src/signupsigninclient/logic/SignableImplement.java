@@ -106,8 +106,8 @@ public class SignableImplement implements Signable {
      * @param message the message class contains the user and the request type
      * @throws exceptions.ConnectionException if an error occurred between the
      * client an server, error message
-     * @throws exceptions.UserNotFoundException
-     * @throws exceptions.IncorrectPasswordException
+     * @throws exceptions.UserNotFoundException if the user doesn't exist, error
+     * @throws exceptions.IncorrectPasswordException if the password is incorrect, error
      * @throws exceptions.UserAlreadyExistException if the user already exist,
      * error message
      * @throws exceptions.DatabaseNotFoundException if an error occurred with

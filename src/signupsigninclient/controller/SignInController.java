@@ -271,12 +271,10 @@ public class SignInController {
             //if a 26 character its typed, take first character to 25 and set it to the field(spaces not allowed)
             if (userTxt.getText().length() > 25) {
                 userTxt.setText(userTxt.getText().substring(0, 25));
-                LOG.warning("25 character limit reached in user");
             }
             //Control empty spaces
             if (userTxt.getText().contains(" ")) {
                 userTxt.setText(userTxt.getText().replaceAll(" ", ""));
-                LOG.warning("Spaces are not allowed in User");
             }
             //Show error label
             errorLbl.setVisible(false);
@@ -299,12 +297,10 @@ public class SignInController {
             //if a 26 character its typed, take first character to 25 and set it to the field(spaces not allowed)
             if (passwordTxt.getText().length() > 25) {
                 passwordTxt.setText(passwordTxt.getText().substring(0, 25));
-                LOG.warning("25 character limit reached in password");
             }
             //Control empty spaces
             if (passwordTxt.getText().contains(" ")) {
                 passwordTxt.setText(passwordTxt.getText().replaceAll(" ", ""));
-                LOG.warning("Spaces are not allowed in Password");
             }
             //Show error label
             errorLbl.setVisible(false);

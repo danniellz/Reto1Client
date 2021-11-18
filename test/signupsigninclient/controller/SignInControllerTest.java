@@ -18,7 +18,7 @@ import signupsigninclient.SignUpSignInClient;
 /**
  * Test for the SignIn Window IT
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan, Daniel Brizuela
  * @version 1.0
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
