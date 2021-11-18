@@ -9,7 +9,6 @@ import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -18,7 +17,7 @@ import signupsigninclient.SignUpSignInClient;
 
 /**
  * Test for the SignIn Window IT
- * 
+ *
  * @author Jonathan Viñan
  * @version 1.0
  */
@@ -35,6 +34,10 @@ public class SignInControllerTest extends ApplicationTest {
         FxToolkit.setupApplication(SignUpSignInClient.class);
     }
 
+    /**
+     * Test the initial state of the window
+     */
+    //@Ignore
     @Test
     public void testA_start() {
         verifyThat("#userTxt", hasText(""));
@@ -42,12 +45,20 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#loginBtn", isEnabled());
     }
 
+    /**
+     * Test if the SignUp window is visible pressing the Hyperlink
+     */
+    //@Ignore
     @Test
     public void testB_VisibleWindowSignUp() {
         clickOn("#signUpHl");
         verifyThat("#signUpPanel", isVisible());
     }
 
+    /**
+     * test the user and password limit characters
+     */
+    //@Ignore
     @Test
     public void testC_UserAndPassword25Characters() {
         clickOn("#signInHl");
@@ -67,6 +78,10 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
+    /**
+     * Test if there is empry fields
+     */
+    //@Ignore
     @Test
     public void testD_EmptyFields() {
         //User field empty
@@ -84,12 +99,16 @@ public class SignInControllerTest extends ApplicationTest {
         verifyThat("#errorLbl", LabeledMatchers.hasText("The fields have to be filled"));
         doubleClickOn("#passwordTxt");
         eraseText(1);
-        
+
         //All empty
         clickOn("#loginBtn");
         verifyThat("#errorLbl", LabeledMatchers.hasText("The fields have to be filled"));
     }
 
+    /**
+     * Test if the user password is wrong
+     */
+    //@Ignore
     @Test
     public void testE_PasswordError() {
         clickOn("#userTxt");
@@ -104,8 +123,12 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
+    /**
+     * Test ig the user doesn't exist in the database
+     */
+    //@Ignore
     @Test
-    public void testF_UserNotExist() {
+    public void testF_UserError() {
         clickOn("#userTxt");
         write("Aloy");
         clickOn("#passwordTxt");
@@ -118,6 +141,10 @@ public class SignInControllerTest extends ApplicationTest {
         eraseText(1);
     }
 
+    /**
+     * Test if the user can successfully log in
+     */
+    //@Ignore
     @Test
     public void testG_LoginUserConnection() {
         clickOn("#userTxt");
@@ -137,9 +164,37 @@ public class SignInControllerTest extends ApplicationTest {
         clickOn("#userTxt");
         write("pepeUser");
         clickOn("#passwordTxt");
-        write("1234");
+        write("123456");
         clickOn("#loginBtn");
-        verifyThat(".alert", NodeMatchers.isVisible());
+        verifyThat("Server Connection Error", isVisible());
+    }
+
+    /**
+     * Test if database doesn't exist or if there is a problem with it
+     */
+    @Ignore
+    @Test
+    public void testI_DatabaseError() {
+        clickOn("#userTxt");
+        write("pepeUser");
+        clickOn("#passwordTxt");
+        write("123456");
+        clickOn("#loginBtn");
+        verifyThat("Database Connection Error", isVisible());
+    }
+
+    /**
+     * Test if the maximum number of connection is reached
+     */
+    @Ignore
+    @Test
+    public void testJ_MaxConnectionReached() {
+        clickOn("#userTxt");
+        write("pepeUser");
+        clickOn("#passwordTxt");
+        write("123456");
+        clickOn("#loginBtn");
+        verifyThat("Max Connection Reached", isVisible());
     }
 
 }
