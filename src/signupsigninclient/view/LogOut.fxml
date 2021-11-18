@@ -18,6 +18,16 @@
          <font>
             <Font size="18.0" />
          </font></Label>
+      <Label fx:id="userLbl" alignment="CENTER" contentDisplay="CENTER" layoutY="200.0" minHeight="-Infinity" prefHeight="27.0" prefWidth="600.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="emailLbl" alignment="CENTER" contentDisplay="CENTER" layoutY="250.0" minHeight="-Infinity" prefHeight="27.0" prefWidth="600.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
       <MenuBar fx:id="menuBar" layoutY="1.0">
         <menus>
           <Menu fx:id="file" mnemonicParsing="false" text="File">

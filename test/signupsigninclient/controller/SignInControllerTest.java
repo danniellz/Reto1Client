@@ -9,12 +9,10 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
@@ -36,15 +34,13 @@ public class SignInControllerTest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(SignUpSignInClient.class);
     }
-
+    
     @Test
     public void testA_start() {
         verifyThat("#userTxt", hasText(""));
         verifyThat("#passwordTxt", hasText(""));
         verifyThat("#loginBtn", isEnabled());
     }
-    
-        
     
     @Test
     public void testB_VisibleWindowSignUp() {
@@ -60,11 +56,14 @@ public class SignInControllerTest extends ApplicationTest {
         for (int i = 0; i < 26; i++) {
             write("a");
         }
-        verifyThat("#errorLbl", isEnabled());
+        eraseText(25);
         clickOn("#passwordTxt");
         for (int i = 0; i < 26; i++) {
             write("a");
         }
+        eraseText(25);
+        verifyThat("#userTxt", hasText(""));
+        verifyThat("#passwordTxt", hasText(""));
         doubleClickOn("#userTxt");
         eraseText(1);
         doubleClickOn("#passwordTxt");

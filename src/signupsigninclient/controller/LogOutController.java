@@ -42,6 +42,10 @@ public class LogOutController {
     @FXML
     private Label messageLbl;
     @FXML
+    private Label userLbl;
+    @FXML
+    private Label emailLbl;
+    @FXML
     private MenuItem logOutItem;
     @FXML
     private MenuItem exitItem;
@@ -59,6 +63,7 @@ public class LogOutController {
      * Initialize window
      *
      * @param root Contains the FXML
+     * @param user User
      */
     public void initStage(Parent root, User user) {
         try {
@@ -75,7 +80,8 @@ public class LogOutController {
             logOutItem.setOnAction(this::handleLogOut);
             exitItem.setOnAction(this::handleExit);
             messageLbl.setText("Hello " + user.getFullName() + ", you have succesfully logged in!!");
-            messageLbl.setTextAlignment(TextAlignment.CENTER);
+            userLbl.setText("Username: " + user.getLogin());
+            emailLbl.setText("Email: " + user.getEmail());
             //Show window (asynchronous)
             stage.show();
         } catch (Exception e) {
