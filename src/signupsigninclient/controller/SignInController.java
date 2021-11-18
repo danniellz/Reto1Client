@@ -150,17 +150,20 @@ public class SignInController {
             }
         } catch (UserNotFoundException ex) {
             //Show an error label if the username is incorrect, LOG SEVERE included with Exception
+            LOG.severe("User doesn't exist");
             errorLbl.setText("Incorrect Username");
             errorLbl.setVisible(true);
             userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
             passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
         } catch (IncorrectPasswordException ex) {
+            LOG.severe("Incorrect password");
             //Show an error label if the password is incorrect, LOG SEVERE included with Exception
             errorLbl.setText("Incorrect Password");
             errorLbl.setVisible(true);
             userTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
             passwordTxt.setStyle("-fx-border-color: #DC143C; -fx-border-width: 1.5px;");
         } catch (ConnectionException ex) {
+            LOG.severe("Server Connection Error");
             //Show an error Alert if there is not connection with the server, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connecion Error");
@@ -168,6 +171,7 @@ public class SignInController {
             alert.setContentText("Server is not available, please, try again later");
             alert.showAndWait();
         } catch (MaxConnectionException ex) {
+            LOG.severe("Max Connection Reached");
             //Show an error Alert if the Max connection with the server is reached, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Connection Limit Warning");
@@ -175,6 +179,7 @@ public class SignInController {
             alert.setContentText("The Server is not available because the limit connection has been reached, please try again later");
             alert.showAndWait();
         } catch (DatabaseNotFoundException ex) {
+            LOG.severe("Database Error");
             //Show an error Alert if there is a problem with the DataBase, LOG SEVERE included with Exception
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Database Error");
@@ -185,12 +190,12 @@ public class SignInController {
             LOG.log(Level.SEVERE, "User already exist Error", ex);
         } catch (Exception ex) {
             //Show an error Alert if an unknow error occured
+            LOG.log(Level.SEVERE, "An Unknown error has occurred", ex);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Unknown error");
             alert.setContentText("An unknow error has occured, please, try again later");
-            alert.showAndWait();
-            LOG.log(Level.SEVERE, "An Unknown error has occurred", ex);
+            alert.showAndWait(); 
         }
     }
 
